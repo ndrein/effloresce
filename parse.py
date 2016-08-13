@@ -15,7 +15,7 @@ class Parser:
         Parse a string and return an array of the results
 
         :param string:
-            :return: array -- tokens
+        :return: array -- tokens
         """
         #TODO
 
