@@ -17,9 +17,5 @@ class Parser:
         :param string:
             :return: array -- tokens
         """
-        raise NotImplemented
+        #TODO
 
-
-    @classmethod
-    def fun(cls):
-        return cls.dfa
