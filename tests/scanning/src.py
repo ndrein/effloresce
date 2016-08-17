@@ -4,4 +4,4 @@ Update this file when source file structure changes
 """
 
 from effloresce.parsing.parse import Parser
-from effloresce.parsing.dfa import DFA
+from effloresce.parsing.dfa import DFA, State, Token

@@ -4,7 +4,17 @@
 import collections
 
 
-State = collections.namedtuple('State', ['id', 'token_type'])
+class State:
+    def __init__(self, id, token_type=None):
+        self.id = id
+        self.token_type = token_type
+
+    def __eq__(self, other):
+        return self.__dict__ == other.__dict__
+
+    def __hash__(self):
+        return hash(repr(self))
+
 Token = collections.namedtuple('Token', ['type', 'lexeme'])
 
 
@@ -13,6 +23,19 @@ class CantTokenize(Exception):
 
 
 class DFA:
+    @staticmethod
+    def init_transitions(alphabet, states):
+        """
+        :param alphabet:
+        :param states:
+        :return: transitions dict initialized to None
+        """
+        transitions = dict()
+        for symbol in alphabet:
+            for state in states:
+                transitions[symbol, state] = None
+        return transitions
+
     def __init__(self, alphabet, states, start_state, accept_states, transitions):
         """
         Create a DFA
