@@ -4,17 +4,6 @@
 import collections
 
 
-class State:
-    def __init__(self, id, token_type=None):
-        self.id = id
-        self.token_type = token_type
-
-    def __eq__(self, other):
-        return self.__dict__ == other.__dict__
-
-    def __hash__(self):
-        return hash(repr(self))
-
 Token = collections.namedtuple('Token', ['type', 'lexeme'])
 
 
@@ -31,31 +20,34 @@ class DFA:
         :return: transitions dict initialized to None
         """
         transitions = dict()
-        for symbol in alphabet:
-            for state in states:
-                transitions[symbol, state] = None
+        for state in states:
+            for symbol in alphabet:
+                transitions[state, symbol] = None
         return transitions
 
-    def __init__(self, alphabet, states, start_state, accept_states, transitions):
+    def __init__(self, alphabet, states, start_state, accept_states, transitions, state_map):
         """
         Create a DFA
         States and alphabet are arbitrary, but must have the equality (=) operator defined on them
 
         :param alphabet: alphabet as a set
-        :param states: set of states
+        :param states: set of states - can be represented by an int - cannot be None
         :param start_state: start state \in states
         :param accept_states: set of accepting states
         :param transitions: 2-dimensional dictionary
                             state x symbol -> state
+        :param state_map: dict: state -> token type
+                          (eg. if we end up in this state, what kind of token did we munch)
         """
         self.alphabet = alphabet
         self.states = states
         self.start_state = start_state
         self.accept_states = accept_states
         self.transitions = transitions
+        self.state_map = state_map
 
     def transition(self, state, symbol):
-        return self.transitions[state][symbol]
+        return self.transitions[state, symbol]
 
     def is_accepting(self, state):
         return state in self.accept_states
@@ -88,6 +80,7 @@ class DFA:
         prev_state = None
         current_state = self.start_state
 
+        index = 0
         for index, symbol in enumerate(input):
             prev_state = current_state
             current_state = self.transition(current_state, symbol)
@@ -97,7 +90,7 @@ class DFA:
                 break
 
         if self.is_accepting(current_state): # Emit viable token
-            return input[index:], Token(prev_state.token_type, input[:index])
+            return input[index + 1:], Token(self.state_map[prev_state], input[:index + 1])
         else:
             # TODO: backtrack for Maximal Munch
             raise CantTokenize()

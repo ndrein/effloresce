@@ -1,24 +1,26 @@
 import unittest
 
-from .src import DFA, State, Token
+from .src import DFA
 
 
 class SimpleDFA(unittest.TestCase):
     def setUp(self):
         alphabet = list('abc')
-        states = [State(i) for i in range(5)]
-        start_state = State(0)
-        accept_states = [State(1), State(4)]
+        states = list(range(5))
+        start_state = 0
+        accept_states = [1, 4]
         transitions = DFA.init_transitions(alphabet, states)
 
-        transitions[State(0), 'a'] = State(0)
-        transitions[State(0), 'b'] = State(1)
-        transitions[State(0), 'c'] = State(2)
-        transitions[State(2), 'b'] = State(2)
-        transitions[State(2), 'a'] = State(3)
-        transitions[State(3), 'b'] = State(4)
+        transitions[0, 'a'] = 0
+        transitions[0, 'b'] = 1
+        transitions[0, 'c'] = 2
+        transitions[2, 'b'] = 2
+        transitions[2, 'a'] = 3
+        transitions[3, 'b'] = 4
 
-        self.dfa = DFA(alphabet, states, start_state, accept_states, transitions)
+        state_map = dict.fromkeys(range(5))
+
+        self.dfa = DFA(alphabet, states, start_state, accept_states, transitions, state_map)
 
     def test_failed_tokenize(self):
         string = "aaabc"
