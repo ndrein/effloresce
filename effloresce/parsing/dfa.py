@@ -1,11 +1,11 @@
 """Format for a DFA"""
 
 
-from collections import namedtuple
+import collections
 
 
-State = namedtuple('State', ['id', 'token_type'])
-Token = namedtuple('Token', ['type', 'lexeme'])
+State = collections.namedtuple('State', ['id', 'token_type'])
+Token = collections.namedtuple('Token', ['type', 'lexeme'])
 
 
 class CantTokenize(Exception):
@@ -62,18 +62,20 @@ class DFA:
         :return: modified input, Token
         :raises: CantTokenize
         """
+        prev_state = None
         current_state = self.start_state
 
         for index, symbol in enumerate(input):
-            if self.is_accepting(current_state):
-                return input[index:], Token(current_state.token_type, input[:index])
-            else:
-                # Transition on symbol
-                current_state = self.transition(current_state, symbol)
+            prev_state = current_state
+            current_state = self.transition(current_state, symbol)
 
-                # We have transitioned to the error state (None)
-                if current_state == None:
-                    raise CantTokenize()
+            # We can't munch anymore to build this token
+            if current_state == None:
+                break
 
-        # If we have failed to return a token by the time we get to the end of the input, we must throw an error
-        raise CantTokenize()
+        if self.is_accepting(current_state): # Emit viable token
+            return input[index:], Token(prev_state.token_type, input[:index])
+        else:
+            # TODO: backtrack for Maximal Munch
+            raise CantTokenize()
+
