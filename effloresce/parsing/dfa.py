@@ -38,6 +38,7 @@ class DFA:
                             state x symbol -> state
         :param state_map: dict: state -> token type
                           (eg. if we end up in this state, what kind of token did we munch)
+                          (eg. "var" state -> ID)
         """
         self.alphabet = alphabet
         self.states = states
@@ -68,6 +69,9 @@ class DFA:
 
         return tokens
 
+    def can_transition(self, input, current_state):
+        return len(input) > 0 and self.transition(current_state, input[0]) != None
+
     def munch(self, input):
         """
         Read in symbols from the input and either return a Token or throw an error
@@ -77,20 +81,16 @@ class DFA:
         :return: modified input, Token
         :raises: CantTokenize
         """
-        prev_state = None
         current_state = self.start_state
+        lexeme = ""
 
-        index = 0
-        for index, symbol in enumerate(input):
-            prev_state = current_state
-            current_state = self.transition(current_state, symbol)
-
-            # We can't munch anymore to build this token
-            if current_state == None:
-                break
+        while self.can_transition(input, current_state):
+            current_state = self.transition(current_state, input[0])
+            lexeme += input[0]
+            input = input[1:]
 
         if self.is_accepting(current_state): # Emit viable token
-            return input[index + 1:], Token(self.state_map[prev_state], input[:index + 1])
+            return input, Token(self.state_map[current_state], lexeme)
         else:
             # TODO: backtrack for Maximal Munch
             raise CantTokenize()
