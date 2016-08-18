@@ -15,8 +15,6 @@ class DFA:
     @staticmethod
     def init_transitions(alphabet, states):
         """
-        :param alphabet:
-        :param states:
         :return: transitions dict initialized to None
         """
         transitions = dict()
@@ -25,9 +23,19 @@ class DFA:
                 transitions[state, symbol] = None
         return transitions
 
+    @staticmethod
+    def build_multiple_transitions(transitions, beginning_state, symbols, end_state):
+        """
+        Modify the transitions dict to transition from beginning_state to end_state on all of the symbols
+        :param transitions: transitions dict
+        :return: modified transitions dict
+        """
+        for symbol in symbols:
+            transitions[beginning_state, symbol] = end_state
+        return transitions
+
     def __init__(self, alphabet, states, start_state, accept_states, transitions, state_map):
         """
-        Create a DFA
         States and alphabet are arbitrary, but must have the equality (=) operator defined on them
 
         :param alphabet: alphabet as a set
@@ -40,6 +48,8 @@ class DFA:
                           (eg. if we end up in this state, what kind of token did we munch)
                           (eg. "var" state -> ID)
         """
+        assert(start_state in states)
+        assert(set(accept_states) < set(states))
         self.alphabet = alphabet
         self.states = states
         self.start_state = start_state
@@ -69,7 +79,10 @@ class DFA:
 
         return tokens
 
-    def can_transition(self, input, current_state):
+    def is_transition_possible(self, input, current_state):
+        """
+        Determine whether we can continue to munch input given that we are currently in current_state
+        """
         return len(input) > 0 and self.transition(current_state, input[0]) != None
 
     def munch(self, input):
@@ -84,7 +97,7 @@ class DFA:
         current_state = self.start_state
         lexeme = ""
 
-        while self.can_transition(input, current_state):
+        while self.is_transition_possible(input, current_state):
             current_state = self.transition(current_state, input[0])
             lexeme += input[0]
             input = input[1:]
