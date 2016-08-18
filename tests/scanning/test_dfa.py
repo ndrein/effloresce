@@ -22,16 +22,34 @@ class SimpleDFA(unittest.TestCase):
 
         self.dfa = DFA(alphabet, states, start_state, accept_states, transitions, state_map)
 
-    def test_failed_tokenize(self):
-        string = "aaabc"
+    def simple_test(self):
+        tokens = self.dfa.tokenize("b")
+        assert(len(tokens) == 1)
+        assert(tokens[0].lexeme == "b")
+
+    def assert_failed_tokenization(self, string):
         try:
             self.dfa.tokenize(string)
         except:
             return 0
         raise Exception("Should have failed to tokenize " + string)
 
+    def test_single_failed_tokenize(self):
+        self.assert_failed_tokenization("aaabc")
+
+    def test_multiple_failed_tokenize(self):
+        # b passes, cac fails
+        self.assert_failed_tokenization("b" "cac" "cab")
+
     def test_tokenize(self):
-        string = "aacbab"
-        self.dfa.tokenize(string)
+        tokens = self.dfa.tokenize("aacbab" "b" "cab" "")
+        assert(tokens[0].lexeme == "aacbab")
+        assert(tokens[1].lexeme == "b")
+        assert(tokens[2].lexeme == "cab")
+
+    def test_empty_input(self):
+        tokens = self.dfa.tokenize('')
+        assert(tokens == [])
 
 
+# TODO: test token types with a real state_map
