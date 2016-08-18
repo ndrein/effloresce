@@ -107,4 +107,3 @@ class DFA:
         else:
             # TODO: backtrack for Maximal Munch
             raise CantTokenize()
-
