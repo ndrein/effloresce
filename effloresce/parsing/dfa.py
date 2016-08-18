@@ -12,6 +12,7 @@ class CantTokenize(Exception):
 
 
 class DFA:
+    # TODO: instead of using "None" transistions for error transitions, just test to see if the required transition exists in the dictionary
     @staticmethod
     def init_transitions(alphabet, states):
         """
@@ -66,6 +67,15 @@ class DFA:
     def is_accepting(self, state):
         return state in self.accept_states
 
+    def trim_leading_delimiters(self, input):
+        """
+        Remove all leading instances of self.token_delimiters
+
+        :param input: iterable of input
+        :return: modified input
+        """
+        return input.strip(self.token_delimiters)
+
     def tokenize(self, input):
         """
         Take a sequence of input and return an array of Tokens
@@ -76,9 +86,11 @@ class DFA:
         """
         tokens = []
 
+        input = self.trim_leading_delimiters(input)
         while len(input) > 0:
             input, token = self.munch(input)
             tokens.append(token)
+            input = self.trim_leading_delimiters(input)
 
         return tokens
 
@@ -87,15 +99,6 @@ class DFA:
         Determine whether we can continue to munch input given that we are currently in current_state
         """
         return len(input) > 0 and input[0] not in self.token_delimiters and self.transition(current_state, input[0]) != None
-
-    def trim_leading_delimiters(self, input):
-        """
-        Remove all leading instances of self.token_delimiters
-
-        :param input: iterable of input
-        :return: modified input
-        """
-        return input.strip(self.token_delimiters)
 
     def munch(self, input):
         """
@@ -108,8 +111,6 @@ class DFA:
         """
         current_state = self.start_state
         lexeme = ''
-
-        input = self.trim_leading_delimiters(input)
 
         while self.can_munch_more(input, current_state):
             current_state = self.transition(current_state, input[0])

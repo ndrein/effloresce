@@ -57,17 +57,17 @@ class SimpleDFA(unittest.TestCase):
 # TODO: add whitespace support
 class NumbersAndIDs(unittest.TestCase):
     def setUp(self):
-        alphabet = list(range(10)) + list(string.ascii_lowercase)
+        alphabet = list('0123456789') + list(string.ascii_lowercase)
         states = {'start', 'zero', 'non_zero_numeric', 'id'}
         start_state = 'start'
         accept_states = {'zero', 'non_zero_numeric', 'id'}
         transitions = DFA.init_transitions(alphabet, states)
 
         transitions['start', '0'] = 'zero'
-        transitions = DFA.build_multiple_transitions(transitions, 'start', '0123456789', 'non_zero_numeric')
+        transitions = DFA.build_multiple_transitions(transitions, 'start', '123456789', 'non_zero_numeric')
         transitions = DFA.build_multiple_transitions(transitions, 'non_zero_numeric', '0123456789', 'non_zero_numeric')
         transitions = DFA.build_multiple_transitions(transitions, 'start', string.ascii_lowercase, 'id')
-        transitions = DFA.build_multiple_transitions(transitions, 'id', list(string.ascii_lowercase) + list(range(10)), 'id')
+        transitions = DFA.build_multiple_transitions(transitions, 'id', list(string.ascii_lowercase) + list('0123456789'), 'id')
 
         state_map = dict({
             'zero': 'NUM',
@@ -96,3 +96,32 @@ class NumbersAndIDs(unittest.TestCase):
         assert(tokens[0].type == 'NUM')
         assert(tokens[1].lexeme == '304')
         assert(tokens[1].type == 'NUM')
+
+    def test_all_whitespace(self):
+        assert(len(self.dfa.tokenize('          ')) == 0)
+
+    def test_leading_and_trailing_whitespace(self):
+        tokens = self.dfa.tokenize(' a123     ')
+        assert(len(tokens) == 1)
+        assert(tokens[0].lexeme == 'a123')
+
+    def test_ids(self):
+        tokens = self.dfa.tokenize('      0' '120\n' '90' 'a999\t' '9990   \n\t' '0')
+        assert(len(tokens) == 6)
+
+        assert(tokens[0].lexeme == '0')
+        assert(tokens[0].type == 'NUM')
+
+        assert(tokens[1].lexeme == '120')
+        assert(tokens[1].type == 'NUM')
+
+        assert(tokens[2].lexeme == '90')
+
+        assert(tokens[3].lexeme == 'a999')
+        assert(tokens[3].type == 'ID')
+
+        assert(tokens[4].lexeme == '9990')
+        assert(tokens[4].type == 'NUM')
+
+        assert(tokens[5].lexeme == '0')
+        assert(tokens[5].type == 'NUM')
