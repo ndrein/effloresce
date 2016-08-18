@@ -63,9 +63,9 @@ class NumbersAndIDs(unittest.TestCase):
         accept_states = {'zero', 'non_zero_numeric', 'id'}
         transitions = DFA.init_transitions(alphabet, states)
 
-        transitions['start', 0] = 'zero'
-        transitions = DFA.build_multiple_transitions(transitions, 'start', range(1, 10), 'non_zero_numeric')
-        transitions = DFA.build_multiple_transitions(transitions, 'non_zero_numeric', range(0, 10), 'non_zero_numeric')
+        transitions['start', '0'] = 'zero'
+        transitions = DFA.build_multiple_transitions(transitions, 'start', '0123456789', 'non_zero_numeric')
+        transitions = DFA.build_multiple_transitions(transitions, 'non_zero_numeric', '0123456789', 'non_zero_numeric')
         transitions = DFA.build_multiple_transitions(transitions, 'start', string.ascii_lowercase, 'id')
         transitions = DFA.build_multiple_transitions(transitions, 'id', list(string.ascii_lowercase) + list(range(10)), 'id')
 
@@ -81,10 +81,18 @@ class NumbersAndIDs(unittest.TestCase):
        tokens = self.dfa.tokenize('0')
        assert(len(tokens) == 1)
        assert(tokens[0].lexeme == '0')
-       assert(tokens[1].type == 'NUM')
+       assert(tokens[0].type == 'NUM')
 
     def test_simple_num(self):
         tokens = self.dfa.tokenize('102304')
-        assert(len(tokens) == 6)
+        assert(len(tokens) == 1)
         assert(tokens[0].lexeme == '102304')
         assert(tokens[0].type == 'NUM')
+
+    def test_simple_whitespace(self):
+        tokens = self.dfa.tokenize('102 304')
+        assert(len(tokens) == 2)
+        assert(tokens[0].lexeme == '102')
+        assert(tokens[0].type == 'NUM')
+        assert(tokens[1].lexeme == '304')
+        assert(tokens[1].type == 'NUM')

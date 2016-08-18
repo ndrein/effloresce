@@ -1,7 +1,7 @@
 """Format for a DFA"""
 
-
 import collections
+import string
 
 
 Token = collections.namedtuple('Token', ['type', 'lexeme'])
@@ -34,7 +34,7 @@ class DFA:
             transitions[beginning_state, symbol] = end_state
         return transitions
 
-    def __init__(self, alphabet, states, start_state, accept_states, transitions, state_map):
+    def __init__(self, alphabet, states, start_state, accept_states, transitions, state_map, token_delimiters=string.whitespace):
         """
         States and alphabet are arbitrary, but must have the equality (=) operator defined on them
 
@@ -47,6 +47,8 @@ class DFA:
         :param state_map: dict: state -> token type
                           (eg. if we end up in this state, what kind of token did we munch)
                           (eg. "var" state -> ID)
+        :param token_delimiters: set of symbols that separate tokens
+                                 defaults to whitespace
         """
         assert(start_state in states)
         assert(set(accept_states) < set(states))
@@ -56,6 +58,7 @@ class DFA:
         self.accept_states = accept_states
         self.transitions = transitions
         self.state_map = state_map
+        self.token_delimiters = token_delimiters
 
     def transition(self, state, symbol):
         return self.transitions[state, symbol]
@@ -79,11 +82,20 @@ class DFA:
 
         return tokens
 
-    def is_transition_possible(self, input, current_state):
+    def can_munch_more(self, input, current_state):
         """
         Determine whether we can continue to munch input given that we are currently in current_state
         """
-        return len(input) > 0 and self.transition(current_state, input[0]) != None
+        return len(input) > 0 and input[0] not in self.token_delimiters and self.transition(current_state, input[0]) != None
+
+    def trim_leading_delimiters(self, input):
+        """
+        Remove all leading instances of self.token_delimiters
+
+        :param input: iterable of input
+        :return: modified input
+        """
+        return input.strip(self.token_delimiters)
 
     def munch(self, input):
         """
@@ -95,9 +107,11 @@ class DFA:
         :raises: CantTokenize
         """
         current_state = self.start_state
-        lexeme = ""
+        lexeme = ''
 
-        while self.is_transition_possible(input, current_state):
+        input = self.trim_leading_delimiters(input)
+
+        while self.can_munch_more(input, current_state):
             current_state = self.transition(current_state, input[0])
             lexeme += input[0]
             input = input[1:]
