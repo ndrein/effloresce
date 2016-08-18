@@ -53,8 +53,6 @@ class SimpleDFA(unittest.TestCase):
         assert(tokens == [])
 
 
-# TODO: test token types with a real state_map
-# TODO: add whitespace support
 class NumbersAndIDs(unittest.TestCase):
     def setUp(self):
         alphabet = list('0123456789') + list(string.ascii_lowercase)
