@@ -29,6 +29,7 @@ class DFA:
         """
         Modify the transitions dict to transition from beginning_state to end_state on all of the symbols
         :param transitions: transitions dict
+        :param symbols: iterable of symbols
         :return: modified transitions dict
         """
         for symbol in symbols:
