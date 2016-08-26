@@ -27,7 +27,8 @@ class DFA:
     @staticmethod
     def build_multiple_transitions(transitions, beginning_state, symbols, end_state):
         """
-        Modify the transitions dict to transition from beginning_state to end_state on all of the symbols
+        Convenience method to add to the transitions dict to make a DFA
+        Transition from beginning_state to end_state on all of the symbols
         :param transitions: transitions dict
         :param symbols: iterable of symbols
         :return: modified transitions dict
@@ -35,6 +36,23 @@ class DFA:
         for symbol in symbols:
             transitions[beginning_state, symbol] = end_state
         return transitions
+
+    @staticmethod
+    def build_complement_transitions(transitions, beginning_state, symbols, a, end_state_a, end_state_b):
+        """
+        Convenience method to add to the transitions dict to make a DFA
+        If we see an a, go to end_state_a
+        If we see one of the given symbols that's not a, go to end_state_b
+
+        :param transitions: transitions dict
+        :param symbols: set of symbols
+        :param a: symbol
+        :return: modified transitions dict
+        """
+        transitions = DFA.build_multiple_transitions(transitions, beginning_state, {a}, end_state_a)
+        transitions = DFA.build_multiple_transitions(transitions, beginning_state, symbols - {a}, end_state_b)
+        return transitions
+
 
     def __init__(self, alphabet, states, start_state, accept_states, transitions, state_map, token_delimiters=string.whitespace):
         """
