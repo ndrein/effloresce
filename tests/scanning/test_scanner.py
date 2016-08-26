@@ -1,12 +1,12 @@
-#TODO: refactor using common.compare_token_sequences
+#TODO: refactor using TestScanner
 import unittest
 import string
 
-from .src import Scanner
-from .src import DFA
+from .src import Scanner, DFA
 
+from .common import TestScanner
 
-class SimpleDFA(unittest.TestCase):
+class TestSimpleDFA(TestScanner):
     def setUp(self):
         alphabet = list('abc')
         states = list(range(5))
