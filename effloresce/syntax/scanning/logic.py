@@ -58,6 +58,7 @@ transitions = DFA.init_transitions(alphabet, states)
 # ID
 
 transitions = DFA.build_multiple_transitions(transitions, 'start', letters - {'f', 'e'}, 'id')
+transitions = DFA.build_multiple_transitions(transitions, 'id', letters, 'id')
 
 ####################################################################################################
 # FORALL
@@ -86,20 +87,21 @@ transitions = DFA.build_multiple_transitions(transitions, 'exists', letters, 'id
 # NUMBERS
 
 transitions = DFA.build_multiple_transitions(transitions, 'start', numbers, 'num')
+transitions = DFA.build_multiple_transitions(transitions, 'num', numbers, 'num')
 
 ####################################################################################################
 # LOGICAL OPERATORS
 
 transitions['start', '!'] = '!'
 transitions['start', '&'] = '&'
-transitions['&', '&'] = '&&'
+transitions['&',     '&'] = '&&'
 transitions['start', '|'] = '|'
-transitions['|', '|'] = '||'
+transitions['|',     '|'] = '||'
 transitions['start', '-'] = '-'
-transitions['-', '>'] = '->'
+transitions['-',     '>'] = '->'
 transitions['start', '<'] = '<'
-transitions['<', '-'] = '<-'
-transitions['<-', '>'] = '<->'
+transitions['<',     '-'] = '<-'
+transitions['<-',    '>'] = '<->'
 transitions['start', '('] = '('
 transitions['start', ')'] = ')'
 transitions['start', ','] = ','
@@ -118,6 +120,9 @@ for state in {'f', 'fo', 'for', 'fora', 'foral',
               'id'}:
     state_map[state] = 'ID'
 
+state_map['forall'] = 'FORALL'
+state_map['exists'] = 'EXISTS'
+
 state_map['num'] = 'NUM'
 
 state_map['!'] = 'NOT'
@@ -135,5 +140,5 @@ state_map[','] = 'COMMA'
 LOGIC DFA
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-# You can import this
+# You're supposed to import this
 logic_dfa = DFA(alphabet, states, start_state, accept_states, transitions, state_map, token_delimiters=string.whitespace)
