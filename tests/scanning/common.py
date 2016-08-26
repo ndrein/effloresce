@@ -5,9 +5,6 @@ from .src import Scanner, logic_dfa
 
 
 class TestScanner(unittest.TestCase):
-    def setUp(self):
-        self.scanner = Scanner(logic_dfa)
-
     def compare_tokenized_input(self, input, correct_tokens):
         """
         Tokenize the input into a sequence of tokens.

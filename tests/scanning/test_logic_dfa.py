@@ -7,6 +7,9 @@ from .common import TestScanner
 
 
 class TestScannerLogicDFA(TestScanner):
+    def setUp(self):
+        self.scanner = Scanner(logic_dfa)
+
     def test_zero(self):
         self.compare_tokenized_input('0', [Token('NUM', '0')])
 
