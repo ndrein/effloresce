@@ -1,3 +1,4 @@
+#TODO: refactor using common.compare_token_sequences
 import unittest
 import string
 
