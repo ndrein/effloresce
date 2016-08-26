@@ -43,8 +43,7 @@ class DFA:
         :param states: set of states - can be represented by an int - cannot be None
         :param start_state: start state \in states
         :param accept_states: set of accepting states
-        :param transitions: 2-dimensional dictionary
-                            state x symbol -> state
+        :param transitions: dict: (state x symbol) -> state
         :param state_map: dict: state -> token type
                           (eg. if we end up in this state, what kind of token did we munch)
                           (eg. "var" state -> ID)
