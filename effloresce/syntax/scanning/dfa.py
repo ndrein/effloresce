@@ -95,24 +95,6 @@ class DFA:
         """
         return input.lstrip(self.token_delimiters)
 
-    def tokenize(self, input):
-        """
-        Take a sequence of input and return an array of Tokens
-
-        :param input: iterable of symbols
-        :return: iterable of Tokens
-        :raises: CantTokenize
-        """
-        tokens = []
-
-        input = self.strip_leading_delimiters(input)
-        while len(input) > 0:
-            input, token = self.munch(input)
-            tokens.append(token)
-            input = self.strip_leading_delimiters(input)
-
-        return tokens
-
     def can_munch_more(self, input, current_state):
         """
         Determine whether we can continue to munch input given that we are currently in current_state

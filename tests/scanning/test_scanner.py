@@ -1,6 +1,7 @@
 import unittest
 import string
 
+from .src import Scanner
 from .src import DFA
 
 
@@ -21,16 +22,16 @@ class SimpleDFA(unittest.TestCase):
 
         state_map = dict.fromkeys(range(5))
 
-        self.dfa = DFA(alphabet, states, start_state, accept_states, transitions, state_map)
+        self.scanner = Scanner(DFA(alphabet, states, start_state, accept_states, transitions, state_map))
 
     def test_simple(self):
-        tokens = self.dfa.tokenize('b')
+        tokens = self.scanner.tokenize('b')
         assert(len(tokens) == 1)
         assert(tokens[0].lexeme == 'b')
 
     def assert_failed_tokenization(self, string):
         try:
-            self.dfa.tokenize(string)
+            self.scanner.tokenize(string)
         except:
             return 0
         raise Exception('Should have failed to tokenize ' + string)
@@ -43,13 +44,13 @@ class SimpleDFA(unittest.TestCase):
         self.assert_failed_tokenization('b' 'cac' 'cab')
 
     def test_tokenize(self):
-        tokens = self.dfa.tokenize('aacbab' 'b' 'cab' '')
+        tokens = self.scanner.tokenize('aacbab' 'b' 'cab' '')
         assert(tokens[0].lexeme == 'aacbab')
         assert(tokens[1].lexeme == 'b')
         assert(tokens[2].lexeme == 'cab')
 
     def test_empty_input(self):
-        tokens = self.dfa.tokenize('')
+        tokens = self.scanner.tokenize('')
         assert(tokens == [])
 
 
@@ -73,22 +74,22 @@ class NumbersAndIDs(unittest.TestCase):
             'id': 'ID'
         })
 
-        self.dfa = DFA(alphabet, states, start_state, accept_states, transitions, state_map)
+        self.scanner = Scanner(DFA(alphabet, states, start_state, accept_states, transitions, state_map))
 
     def test_zero(self):
-       tokens = self.dfa.tokenize('0')
+       tokens = self.scanner.tokenize('0')
        assert(len(tokens) == 1)
        assert(tokens[0].lexeme == '0')
        assert(tokens[0].type == 'NUM')
 
     def test_simple_num(self):
-        tokens = self.dfa.tokenize('102304')
+        tokens = self.scanner.tokenize('102304')
         assert(len(tokens) == 1)
         assert(tokens[0].lexeme == '102304')
         assert(tokens[0].type == 'NUM')
 
     def test_simple_whitespace(self):
-        tokens = self.dfa.tokenize('102 304')
+        tokens = self.scanner.tokenize('102 304')
         assert(len(tokens) == 2)
         assert(tokens[0].lexeme == '102')
         assert(tokens[0].type == 'NUM')
@@ -96,15 +97,15 @@ class NumbersAndIDs(unittest.TestCase):
         assert(tokens[1].type == 'NUM')
 
     def test_all_whitespace(self):
-        assert(len(self.dfa.tokenize('          ')) == 0)
+        assert(len(self.scanner.tokenize('          ')) == 0)
 
     def test_leading_and_trailing_whitespace(self):
-        tokens = self.dfa.tokenize(' a123     ')
+        tokens = self.scanner.tokenize(' a123     ')
         assert(len(tokens) == 1)
         assert(tokens[0].lexeme == 'a123')
 
     def test_ids(self):
-        tokens = self.dfa.tokenize('      0' '120\n' '90' 'a999\t' '9990   \n\t' '0')
+        tokens = self.scanner.tokenize('      0' '120\n' '90' 'a999\t' '9990   \n\t' '0')
         assert(len(tokens) == 6)
 
         assert(tokens[0].lexeme == '0')
