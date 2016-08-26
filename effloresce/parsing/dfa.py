@@ -12,7 +12,7 @@ class CantTokenize(Exception):
 
 
 class DFA:
-    # TODO: instead of using "None" transistions for error transitions, just test to see if the required transition exists in the dictionary
+    # TODO: instead of using "None" transistions for error transitions, define only those transitions that are non-error
     @staticmethod
     def init_transitions(alphabet, states):
         """
@@ -53,6 +53,7 @@ class DFA:
         """
         assert(start_state in states)
         assert(set(accept_states) < set(states))
+
         self.alphabet = alphabet
         self.states = states
         self.start_state = start_state
@@ -67,14 +68,14 @@ class DFA:
     def is_accepting(self, state):
         return state in self.accept_states
 
-    def trim_leading_delimiters(self, input):
+    def strip_leading_delimiters(self, input):
         """
         Remove all leading instances of self.token_delimiters
 
         :param input: iterable of input
         :return: modified input
         """
-        return input.strip(self.token_delimiters)
+        return input.lstrip(self.token_delimiters)
 
     def tokenize(self, input):
         """
@@ -86,11 +87,11 @@ class DFA:
         """
         tokens = []
 
-        input = self.trim_leading_delimiters(input)
+        input = self.strip_leading_delimiters(input)
         while len(input) > 0:
             input, token = self.munch(input)
             tokens.append(token)
-            input = self.trim_leading_delimiters(input)
+            input = self.strip_leading_delimiters(input)
 
         return tokens
 
@@ -122,3 +123,4 @@ class DFA:
         else:
             # TODO: backtrack for Maximal Munch
             raise CantTokenize()
+
