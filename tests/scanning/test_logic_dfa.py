@@ -16,6 +16,21 @@ class TestScannerLogicDFA(TestScanner):
     def test_id(self):
         self.compare_tokenized_input('var', [Token('ID', 'var')])
 
+    def test_T(self):
+        self.compare_tokenized_input('T', [Token('BOOL', 'T')])
+
+    def test_F(self):
+        self.compare_tokenized_input('F', [Token('BOOL', 'F')])
+
+    def test_TF(self):
+        self.compare_tokenized_input('TF', [Token('ID', 'TF')])
+
+    def test_bool_id(self):
+        self.compare_tokenized_input('TF T F f', [Token('ID', 'TF'),
+                                                  Token('BOOL', 'T'),
+                                                  Token('BOOL', 'F'),
+                                                  Token('ID', 'f')])
+
     def test_forall(self):
         self.compare_tokenized_input('forall', [Token('FORALL', 'forall')])
 

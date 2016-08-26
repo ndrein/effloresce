@@ -22,6 +22,7 @@ STATES
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 states = {'start',
+          'bool',
           'f', 'fo', 'for', 'fora', 'foral', 'forall',
           'e', 'ex', 'exi', 'exis', 'exist', 'exists',
           'id',
@@ -46,6 +47,7 @@ start_state = 'start'
 ACCEPT STATES
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 accept_states = {'id',
+                 'bool',
                  'f', 'fo', 'for', 'fora', 'foral', 'forall',
                  'e', 'ex', 'exi', 'exis', 'exist', 'exists',
                  'num',
@@ -60,9 +62,16 @@ TRANSITIONS
 transitions = DFA.init_transitions(alphabet, states)
 
 ####################################################################################################
+# BOOL
+
+transitions['start', 'T'] = 'bool'
+transitions['start', 'F'] = 'bool'
+transitions = DFA.build_multiple_transitions(transitions, 'bool', letters, 'id')
+
+####################################################################################################
 # ID
 
-transitions = DFA.build_multiple_transitions(transitions, 'start', letters - {'f', 'e'}, 'id')
+transitions = DFA.build_multiple_transitions(transitions, 'start', letters - {'f', 'e', 'T', 'F'}, 'id')
 transitions = DFA.build_multiple_transitions(transitions, 'id', letters, 'id')
 
 ####################################################################################################
@@ -120,6 +129,9 @@ STATE MAP
 # eg. 'fo' -> 'ID'
 
 state_map = dict()
+
+state_map['bool'] = 'BOOL'
+
 for state in {'f', 'fo', 'for', 'fora', 'foral',
               'e', 'ex', 'exi', 'exis', 'exist',
               'id'}:
