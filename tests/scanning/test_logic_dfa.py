@@ -1,6 +1,4 @@
 """Test the logic dfa"""
-import unittest
-
 from .src import Scanner, Token, logic_dfa
 
 from .common import TestScanner
