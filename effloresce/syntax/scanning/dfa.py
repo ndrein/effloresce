@@ -11,19 +11,11 @@ class CantTokenize(Exception):
     pass
 
 
-class DFA:
-    # TODO: instead of using "None" transistions for error transitions, define only those transitions that are non-error
-    @staticmethod
-    def init_transitions(alphabet, states):
-        """
-        :return: transitions dict initialized to None
-        """
-        transitions = dict()
-        for state in states:
-            for symbol in alphabet:
-                transitions[state, symbol] = None
-        return transitions
+# The error state is represented by None
+ERROR_STATE = None
 
+
+class DFA:
     @staticmethod
     def build_multiple_transitions(transitions, beginning_state, symbols, end_state):
         """
@@ -59,7 +51,7 @@ class DFA:
         States and alphabet are arbitrary, but must have the equality (=) operator defined on them
 
         :param alphabet: alphabet as a set
-        :param states: set of states - can be represented by an int - cannot be None
+        :param states: set of values with = operator defined - cannot be None (the representation of the error state)
         :param start_state: start state \in states
         :param accept_states: set of accepting states
         :param transitions: dict: (state x symbol) -> state
@@ -81,7 +73,10 @@ class DFA:
         self.token_delimiters = token_delimiters
 
     def transition(self, state, symbol):
-        return self.transitions[state, symbol]
+        """
+        :return: a valid state if possible, otherwise the error state
+        """
+        return self.transitions[state, symbol] if (state, symbol) in self.transitions else ERROR_STATE
 
     def is_accepting(self, state):
         return state in self.accept_states
@@ -99,7 +94,7 @@ class DFA:
         """
         Determine whether we can continue to munch input given that we are currently in current_state
         """
-        return len(input) > 0 and input[0] not in self.token_delimiters and self.transition(current_state, input[0]) != None
+        return len(input) > 0 and input[0] not in self.token_delimiters and self.transition(current_state, input[0]) != ERROR_STATE
 
     def munch(self, input):
         """

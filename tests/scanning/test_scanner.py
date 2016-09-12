@@ -12,7 +12,7 @@ class TestSimpleDFA(TestScanner):
         states = list(range(5))
         start_state = 0
         accept_states = [1, 4]
-        transitions = DFA.init_transitions(alphabet, states)
+        transitions = dict()
 
         transitions[0, 'a'] = 0
         transitions[0, 'b'] = 1
@@ -61,7 +61,7 @@ class NumbersAndIDs(unittest.TestCase):
         states = {'start', 'zero', 'non_zero_numeric', 'id'}
         start_state = 'start'
         accept_states = {'zero', 'non_zero_numeric', 'id'}
-        transitions = DFA.init_transitions(alphabet, states)
+        transitions = dict()
 
         transitions['start', '0'] = 'zero'
         transitions = DFA.build_multiple_transitions(transitions, 'start', '123456789', 'non_zero_numeric')
