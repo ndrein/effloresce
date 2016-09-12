@@ -1,5 +1,4 @@
 # TODO: CFG for logical formulas
-formula -> ID LPAREN RPAREN
 formula -> ID LPAREN arglist RPAREN
 formula -> BOOL
 formula -> LPAREN formula AND formula RPAREN
