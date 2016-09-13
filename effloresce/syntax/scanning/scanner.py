@@ -5,11 +5,13 @@ from . import DFA
 
 
 class Scanner:
+    DFA = DFA
+
     def __init__(self, dfa):
         """
-        :param dfa: constructed using the DFA class
+        :param dfa: constructed using the Scanner.DFA class
         """
-        self.dfa = dfa
+        self.DFA = dfa
 
     def tokenize(self, input):
         """
@@ -21,10 +23,10 @@ class Scanner:
         """
         tokens = []
 
-        input = self.dfa.strip_leading_delimiters(input)
+        input = self.DFA.strip_leading_delimiters(input)
         while len(input) > 0:
-            input, token = self.dfa.munch(input)
+            input, token = self.DFA.munch(input)
             tokens.append(token)
-            input = self.dfa.strip_leading_delimiters(input)
+            input = self.DFA.strip_leading_delimiters(input)
 
         return tokens

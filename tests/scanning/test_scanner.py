@@ -1,8 +1,7 @@
-#TODO: refactor using TestScanner
 import unittest
 import string
 
-from .src import Scanner, DFA
+from .src import Scanner
 
 from .common import TestScanner
 
@@ -23,7 +22,7 @@ class TestSimpleDFA(TestScanner):
 
         state_map = dict.fromkeys(range(5))
 
-        self.scanner = Scanner(DFA(alphabet, states, start_state, accept_states, transitions, state_map))
+        self.scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions, state_map))
 
     def test_simple(self):
         tokens = self.scanner.tokenize('b')
@@ -64,10 +63,10 @@ class NumbersAndIDs(unittest.TestCase):
         transitions = dict()
 
         transitions['start', '0'] = 'zero'
-        transitions = DFA.build_multiple_transitions(transitions, 'start', '123456789', 'non_zero_numeric')
-        transitions = DFA.build_multiple_transitions(transitions, 'non_zero_numeric', '0123456789', 'non_zero_numeric')
-        transitions = DFA.build_multiple_transitions(transitions, 'start', string.ascii_lowercase, 'id')
-        transitions = DFA.build_multiple_transitions(transitions, 'id', list(string.ascii_lowercase) + list('0123456789'), 'id')
+        transitions = Scanner.DFA.build_multiple_transitions(transitions, 'start', '123456789', 'non_zero_numeric')
+        transitions = Scanner.DFA.build_multiple_transitions(transitions, 'non_zero_numeric', '0123456789', 'non_zero_numeric')
+        transitions = Scanner.DFA.build_multiple_transitions(transitions, 'start', string.ascii_lowercase, 'id')
+        transitions = Scanner.DFA.build_multiple_transitions(transitions, 'id', list(string.ascii_lowercase) + list('0123456789'), 'id')
 
         state_map = dict({
             'zero': 'NUM',
@@ -75,7 +74,7 @@ class NumbersAndIDs(unittest.TestCase):
             'id': 'ID'
         })
 
-        self.scanner = Scanner(DFA(alphabet, states, start_state, accept_states, transitions, state_map))
+        self.scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions, state_map))
 
     def test_zero(self):
        tokens = self.scanner.tokenize('0')

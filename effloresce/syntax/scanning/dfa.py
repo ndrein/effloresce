@@ -29,8 +29,8 @@ class DFA:
             transitions[beginning_state, symbol] = end_state
         return transitions
 
-    @staticmethod
-    def build_complement_transitions(transitions, beginning_state, symbols, a, end_state_a, end_state_b):
+    @classmethod
+    def build_complement_transitions(cls, transitions, beginning_state, symbols, a, end_state_a, end_state_b):
         """
         Convenience method to add to the transitions dict to make a DFA
         If we see an a, go to end_state_a
@@ -41,8 +41,8 @@ class DFA:
         :param a: symbol
         :return: modified transitions dict
         """
-        transitions = DFA.build_multiple_transitions(transitions, beginning_state, {a}, end_state_a)
-        transitions = DFA.build_multiple_transitions(transitions, beginning_state, symbols - {a}, end_state_b)
+        transitions = cls.build_multiple_transitions(transitions, beginning_state, {a}, end_state_a)
+        transitions = cls.build_multiple_transitions(transitions, beginning_state, symbols - {a}, end_state_b)
         return transitions
 
 

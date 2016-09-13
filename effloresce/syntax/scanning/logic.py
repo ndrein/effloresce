@@ -3,7 +3,7 @@
 
 import string
 
-from .dfa import DFA
+from effloresce.syntax.scanning import Scanner
 
 
 letters = set(string.ascii_letters)
@@ -66,42 +66,42 @@ transitions = dict()
 
 transitions['start', 'T'] = 'bool'
 transitions['start', 'F'] = 'bool'
-transitions = DFA.build_multiple_transitions(transitions, 'bool', letters, 'id')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'bool', letters, 'id')
 
 ####################################################################################################
 # ID
 
-transitions = DFA.build_multiple_transitions(transitions, 'start', letters - {'f', 'e', 'T', 'F'}, 'id')
-transitions = DFA.build_multiple_transitions(transitions, 'id', letters, 'id')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'start', letters - {'f', 'e', 'T', 'F'}, 'id')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'id', letters, 'id')
 
 ####################################################################################################
 # FORALL
 
 transitions['start', 'f'] = 'f'
 # Beginning with state 'f', if we see an 'o', go to state 'fo', otherwise go to 'id' on any other letter
-transitions = DFA.build_complement_transitions(transitions, 'f', letters, 'o', 'fo', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'fo', letters, 'r', 'for', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'for', letters, 'a', 'fora', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'fora', letters, 'l', 'foral', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'foral', letters, 'l', 'forall', 'id')
-transitions = DFA.build_multiple_transitions(transitions, 'forall', letters, 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'f', letters, 'o', 'fo', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'fo', letters, 'r', 'for', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'for', letters, 'a', 'fora', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'fora', letters, 'l', 'foral', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'foral', letters, 'l', 'forall', 'id')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'forall', letters, 'id')
 
 ####################################################################################################
 # EXISTS
 
 transitions['start', 'e'] = 'e'
-transitions = DFA.build_complement_transitions(transitions, 'e', letters, 'x', 'ex', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'ex', letters, 'i', 'exi', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'exi', letters, 's', 'exis', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'exis', letters, 't', 'exist', 'id')
-transitions = DFA.build_complement_transitions(transitions, 'exist', letters, 's', 'exists', 'id')
-transitions = DFA.build_multiple_transitions(transitions, 'exists', letters, 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'e', letters, 'x', 'ex', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'ex', letters, 'i', 'exi', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'exi', letters, 's', 'exis', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'exis', letters, 't', 'exist', 'id')
+transitions = Scanner.DFA.build_complement_transitions(transitions, 'exist', letters, 's', 'exists', 'id')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'exists', letters, 'id')
 
 ####################################################################################################
 # NUMBERS
 
-transitions = DFA.build_multiple_transitions(transitions, 'start', numbers, 'num')
-transitions = DFA.build_multiple_transitions(transitions, 'num', numbers, 'num')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'start', numbers, 'num')
+transitions = Scanner.DFA.build_multiple_transitions(transitions, 'num', numbers, 'num')
 
 ####################################################################################################
 # LOGICAL OPERATORS
@@ -158,4 +158,4 @@ LOGIC DFA
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 # You're supposed to import this
-logic_dfa = DFA(alphabet, states, start_state, accept_states, transitions, state_map, token_delimiters=string.whitespace)
+logic_dfa = Scanner.DFA(alphabet, states, start_state, accept_states, transitions, state_map, token_delimiters=string.whitespace)
