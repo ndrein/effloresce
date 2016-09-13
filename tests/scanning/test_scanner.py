@@ -34,7 +34,7 @@ class TestSimpleDFA(TestScanner):
         try:
             self.scanner.tokenize(string)
         except:
-            return 0
+            return
         raise Exception('Should have failed to tokenize ' + string)
 
     def test_single_failed_tokenize(self):
