@@ -3,7 +3,7 @@
 
 import string
 
-from effloresce.syntax.scanning import Scanner
+from effloresce.lib.scanning import Scanner
 
 
 letters = set(string.ascii_letters)
