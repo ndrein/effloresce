@@ -18,3 +18,10 @@ class TestScanner(unittest.TestCase):
         for correct_token, computed_token in zip(correct_tokens, computed_tokens):
             assert(correct_token.type == computed_token.type)
             assert(correct_token.lexeme == computed_token.lexeme)
+
+    def assert_fails_tokenization(self, string):
+        try:
+            self.scanner.tokenize(string)
+        except:
+            return
+        raise Exception('Should have failed to tokenize ' + string)
