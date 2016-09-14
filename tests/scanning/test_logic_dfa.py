@@ -1,12 +1,12 @@
 """Test the logic dfa"""
-from .src import Scanner, Token, logic_dfa
+from .src import Scanner, Token, logic_scanner
 
 from .common import TestScanner
 
 
 class TestScannerLogicDFA(TestScanner):
     def setUp(self):
-        self.scanner = Scanner(logic_dfa)
+        self.scanner = logic_scanner
 
     def test_zero(self):
         self.compare_tokenized_input('0', [Token('NUM', '0')])

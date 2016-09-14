@@ -1,7 +1,7 @@
 """Common code that can be used in multiple test case for the Scanner"""
 import unittest
 
-from .src import Scanner, logic_dfa
+from .src import Scanner, logic_scanner
 
 
 class TestScanner(unittest.TestCase):
