@@ -108,3 +108,7 @@ class TestScannerLogicDFA(TestScanner):
                                       Token('RPAREN', ')'),
                                       Token('RPAREN', ')')])
 
+    # TODO: make sure that some inputs fail
+    def test_simple_fail(self):
+        self.assert_fails_tokenization('')
+
