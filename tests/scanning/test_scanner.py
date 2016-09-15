@@ -1,3 +1,4 @@
+# TODO: rewrite using compare_tokenized_input
 import unittest
 import string
 
@@ -22,26 +23,19 @@ class TestSimpleDFA(TestScanner):
 
         state_map = dict.fromkeys(range(5))
 
-        self.scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions, state_map))
+        self.scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions), state_map)
 
     def test_simple(self):
         tokens = self.scanner.tokenize('b')
         assert(len(tokens) == 1)
         assert(tokens[0].lexeme == 'b')
 
-    def assert_failed_tokenization(self, string):
-        try:
-            self.scanner.tokenize(string)
-        except:
-            return
-        raise Exception('Should have failed to tokenize ' + string)
-
     def test_single_failed_tokenize(self):
-        self.assert_failed_tokenization('aaabc')
+        self.assert_fails_tokenization('aaabc')
 
     def test_multiple_failed_tokenize(self):
         # b passes, cac fails
-        self.assert_failed_tokenization('b' 'cac' 'cab')
+        self.assert_fails_tokenization('b' 'cac' 'cab')
 
     def test_tokenize(self):
         tokens = self.scanner.tokenize('aacbab' 'b' 'cab' '')
@@ -74,7 +68,7 @@ class NumbersAndIDs(unittest.TestCase):
             'id': 'ID'
         })
 
-        self.scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions, state_map))
+        self.scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions), state_map)
 
     def test_zero(self):
        tokens = self.scanner.tokenize('0')

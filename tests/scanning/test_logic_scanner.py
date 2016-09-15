@@ -1,5 +1,5 @@
 """Test the logic dfa"""
-from .src import Scanner, Token, logic_scanner
+from .src import Token, logic_scanner
 
 from .common import TestScanner
 
@@ -10,6 +10,9 @@ class TestScannerLogicDFA(TestScanner):
 
     def test_zero(self):
         self.compare_tokenized_input('0', [Token('NUM', '0')])
+
+    def test_double_zero(self):
+        self.compare_tokenized_input('00', [Token('NUM', '00')])
 
     def test_id(self):
         self.compare_tokenized_input('var', [Token('ID', 'var')])
@@ -108,7 +111,29 @@ class TestScannerLogicDFA(TestScanner):
                                       Token('RPAREN', ')'),
                                       Token('RPAREN', ')')])
 
-    # TODO: make sure that some inputs fail
-    def test_simple_fail(self):
-        self.assert_fails_tokenization('')
+    def test_bad_alphabet_characters(self):
+        self.assert_fails_tokenization('@')
+        self.assert_fails_tokenization('#')
+        self.assert_fails_tokenization('$')
+        self.assert_fails_tokenization('&')
+        self.assert_fails_tokenization('|')
 
+    def test_underscore_fail(self):
+        self.assert_fails_tokenization('_')
+
+    def test_percent_fail(self):
+        self.assert_fails_tokenization('%')
+
+    def test_caret_fail(self):
+        self.assert_fails_tokenization('^')
+
+    def test_star_fail(self):
+        self.assert_fails_tokenization('*')
+
+    def test_curly_fail(self):
+        self.assert_fails_tokenization('{')
+        self.assert_fails_tokenization('}')
+
+    def test_square_fail(self):
+        self.assert_fails_tokenization('[')
+        self.assert_fails_tokenization(']')
