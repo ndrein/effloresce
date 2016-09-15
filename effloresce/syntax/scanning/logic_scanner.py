@@ -158,4 +158,4 @@ LOGIC DFA
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 # You're supposed to import this
-logic_scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions, state_map, token_delimiters=string.whitespace))
+logic_scanner = Scanner(Scanner.DFA(alphabet, states, start_state, accept_states, transitions), state_map, token_delimiters=string.whitespace)
