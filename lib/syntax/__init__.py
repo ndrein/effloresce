@@ -1,1 +1,1 @@
-from .scanner import Scanner, Token
+from .scanner import Scanner, Token, CantTokenize

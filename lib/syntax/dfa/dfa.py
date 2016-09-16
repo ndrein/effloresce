@@ -5,8 +5,7 @@ Format for a DFA
 import collections
 import string
 
-# TODO: can't have tokenization here
-class CantTokenize(Exception):
+class CantTraverse(Exception):
     pass
 
 
@@ -102,5 +101,5 @@ class DFA:
             return consumed, remaining, current_state
         else:
             # TODO: backtrack for Maximal Munch
-            raise CantTokenize()
+            raise CantTraverse('Consumed:\n' + consumed + '\nRemaining:\n' + remaining + '\n')
 

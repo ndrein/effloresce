@@ -1,7 +1,7 @@
 """Common code that can be used in multiple test case for the Scanner"""
 import unittest
 
-from .src import Scanner, logic_scanner
+from .src import Scanner, logic_scanner, CantTokenize
 
 
 class TestScanner(unittest.TestCase):
@@ -22,6 +22,6 @@ class TestScanner(unittest.TestCase):
     def assert_fails_tokenization(self, string):
         try:
             self.scanner.tokenize(string)
-        except:
+        except CantTokenize:
             return
         raise Exception('Should have failed to tokenize ' + string)

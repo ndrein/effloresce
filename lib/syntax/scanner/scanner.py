@@ -2,10 +2,15 @@
 
 import string, collections
 
-from lib.syntax.dfa import DFA
+from lib.syntax.dfa import DFA, CantTraverse
 
 
 Token = collections.namedtuple('Token', ['type', 'lexeme'])
+
+class CantTokenize(Exception):
+    def __init__(self, message, reason=''):
+        self.message = message
+        self.reason = reason
 
 
 class Scanner:
@@ -61,8 +66,14 @@ class Scanner:
         tokens = []
 
         remaining = self.strip_leading_elems(self.token_delimiters, input)
+
         while len(remaining) > 0:
-            consumed, remaining, final_state = self.dfa.traverse(remaining)
+            try:
+                consumed, remaining, final_state = self.dfa.traverse(remaining)
+            except CantTraverse:
+                # TODO: use more specific information from CantTraverse
+                raise CantTokenize('Can\'t tokenize the remaining input:\n' + remaining)
+
             tokens.append(Token(self.state_map[final_state], consumed))
             remaining = self.strip_leading_elems(self.token_delimiters, remaining)
 

@@ -1,1 +1,1 @@
-from .dfa import DFA
+from .dfa import DFA, CantTraverse
