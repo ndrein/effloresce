@@ -3,7 +3,7 @@
 
 import string
 
-from lib.syntax.scanner import Scanner
+from lib.syntax.syntax.scanner import Scanner
 
 
 letters = set(string.ascii_letters)

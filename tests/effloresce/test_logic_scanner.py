@@ -1,7 +1,9 @@
 """Test the logic dfa"""
-from .src import Token, logic_scanner
 
-from .common import TestScanner
+from lib.syntax.tests import TestScanner
+from lib.syntax.syntax.scanner import Token
+
+from effloresce.syntax.scanning import logic_scanner
 
 
 class TestScannerLogicDFA(TestScanner):
