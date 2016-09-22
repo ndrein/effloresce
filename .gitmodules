@@ -1,0 +1,3 @@
+[submodule "lib/syntax"]
+	path = lib/syntax
+	url = git@github.com:ndrein/syntax.git
