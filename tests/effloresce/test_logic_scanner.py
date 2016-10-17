@@ -1,9 +1,7 @@
 """Test the logic dfa"""
 
-from lib.syntax.tests import TestScanner
-from lib.syntax.syntax.scanner import Token
+from syntax.scanning import TestScanner, Token
 
-# TODO: fix imports with nose2
 from effloresce.syntax.scanning import logic_scanner
 
 
