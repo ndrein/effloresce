@@ -1,4 +1,4 @@
-LOGIC_GRAMMAR = '''
+LOGIC_GRAMMAR = """
 ?start: LITERAL
          | "(NOT" start ")" -> not
          | "(" start "OR" start ")" -> or
@@ -9,4 +9,4 @@ LITERAL: /[a-z]+/
 
 %import common.WS
 %ignore WS
-'''
+"""
