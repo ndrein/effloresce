@@ -1,5 +1,7 @@
 # effloresce
 
+[![Build Status](https://travis-ci.org/ndrein/effloresce.svg?branch=master)](https://travis-ci.org/ndrein/effloresce)
+
 Logical formula experiments.  Still experimental.
 
 
