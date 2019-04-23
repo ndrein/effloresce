@@ -5,7 +5,7 @@ env:
 - TEST_CMD="coverage run tests/test_black.py"
 install:
 - pip install coverage coveralls flake8 flake8-bugbear mypy
-- pip install -e '.[d]'
+#- pip install -e '.[d]'
 script:
 - $TEST_CMD
 after_success:
