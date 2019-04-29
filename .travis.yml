@@ -7,4 +7,4 @@ install:
 script:
   - $CMD
 env: # Add builds here
-  - CMD="pipenv run pytest"
+  - CMD="pipenv run pytest --cov=effloresce"
