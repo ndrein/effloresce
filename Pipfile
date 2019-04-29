@@ -9,6 +9,7 @@ verify_ssl = true
 lark-parser = "*"
 pytest = "*"
 pytest-cov = "*"
+coveralls = "*"
 
 [requires]
 python_version = "3.7"
