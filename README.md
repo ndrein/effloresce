@@ -1,6 +1,7 @@
 # effloresce
 
 [![Build Status](https://travis-ci.org/ndrein/effloresce.svg?branch=master)](https://travis-ci.org/ndrein/effloresce)
+[![Coverage Status](https://coveralls.io/repos/github/ndrein/effloresce/badge.svg?branch=master)](https://coveralls.io/github/ndrein/effloresce?branch=master)
 
 Logical formula experiments.  Still experimental.
 
