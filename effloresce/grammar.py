@@ -1,4 +1,4 @@
-LOGIC_GRAMMAR = """
+GRAMMAR = """
 ?start: LITERAL
          | "(NOT" start ")" -> not
          | "(" start "OR" start ")" -> or
