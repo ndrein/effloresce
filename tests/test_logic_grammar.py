@@ -6,7 +6,7 @@ from lark import Lark
 from lark import Tree
 from lark.exceptions import UnexpectedCharacters, ParseError
 
-from effloresce.syntax.logic_grammar import LOGIC_GRAMMAR
+from effloresce.logic_grammar import LOGIC_GRAMMAR
 
 
 def test_hello_world():
