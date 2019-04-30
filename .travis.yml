@@ -8,5 +8,6 @@ script:
   - $CMD
 env: # Add builds here
   - CMD="pipenv run pytest --cov=effloresce"
+  - CMD="black --check --verbose ."
 after_success:
   - coveralls
