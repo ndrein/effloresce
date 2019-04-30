@@ -17,5 +17,15 @@ def test_two_literals():
         Formula("p p")
 
 
+def test_malformed_formula():
+    with pytest.raises(Exception):
+        Formula("(NOT p")
+
+
+def test_invalid_token():
+    with pytest.raises(Exception):
+        Formula("NOT")
+
+
 def test_not():
     Formula("(NOT p)")
