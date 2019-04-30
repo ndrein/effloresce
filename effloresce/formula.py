@@ -1,6 +1,6 @@
 from lark import Lark
 
-from effloresce.syntax.logic_grammar import LOGIC_GRAMMAR
+from effloresce.logic_grammar import LOGIC_GRAMMAR
 
 
 class Formula:
