@@ -12,18 +12,8 @@ class Formula:
             raise InvalidFormula
 
     def evaluate(self, interpretation):
-        try:
-            return self._evaluate(interpretation)
-        except KeyError:
-            raise InvalidInterpretation
-
-    def _evaluate(self, interpretation):
         return interpretation[self.tree]
 
 
 class InvalidFormula(Exception):
-    pass
-
-
-class InvalidInterpretation(Exception):
     pass

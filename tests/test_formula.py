@@ -1,6 +1,6 @@
 import pytest
 
-from effloresce.formula import Formula, InvalidFormula, InvalidInterpretation
+from effloresce.formula import Formula, InvalidFormula
 
 
 def test_empty_formula():
@@ -32,7 +32,7 @@ def test_not():
 
 
 def test_evaluate_empty_interpretation():
-    with pytest.raises(InvalidInterpretation):
+    with pytest.raises(Exception):
         Formula("p").evaluate({})
 
 
@@ -49,7 +49,7 @@ def test_evaluate_different_literal():
 
 
 def test_evaluate_non_matching_interpretation():
-    with pytest.raises(InvalidInterpretation):
+    with pytest.raises(Exception):
         Formula("q").evaluate({"p": True})
 
 
