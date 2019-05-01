@@ -60,8 +60,6 @@ def test_or():
 
 
 def test_or_and_not():
-
-
     assert_matches(("or", "p", ("not", "q")), Lark(GRAMMAR).parse("(p OR (NOT q))"))
 
 
