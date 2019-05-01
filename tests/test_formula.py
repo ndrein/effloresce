@@ -55,3 +55,10 @@ def test_evaluate_non_matching_interpretation():
 
 def test_evaluate_longer_literal():
     assert Formula("longliteral").evaluate({"longliteral": True})
+
+
+def test_evaluate_not():
+    assert not Formula("(NOT p)").evaluate({"p": True})
+
+def test_evaluate_not_not():
+    assert Formula("(NOT (NOT p))").evaluate({"p": True})
