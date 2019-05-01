@@ -53,5 +53,5 @@ def test_evaluate_non_matching_interpretation():
         Formula("q").evaluate({"p": True})
 
 
-def test_longer_literal():
+def test_evaluate_longer_literal():
     assert Formula("longliteral").evaluate({"longliteral": True})
