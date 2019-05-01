@@ -50,7 +50,7 @@ def test_evaluate_different_literal():
 
 def test_evaluate_non_matching_interpretation():
     with pytest.raises(InvalidInterpretation):
-        Formula("p").evaluate({"q": True})
+        Formula("q").evaluate({"p": True})
 
 
 def test_longer_literal():

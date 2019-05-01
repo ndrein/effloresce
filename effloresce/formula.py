@@ -7,16 +7,18 @@ from effloresce.grammar import GRAMMAR
 class Formula:
     def __init__(self, s: str):
         try:
-            Lark(GRAMMAR).parse(s)
-            self.s = s
+            self.tree = Lark(GRAMMAR).parse(s)
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
     def evaluate(self, interpretation):
-        if self.s not in interpretation:
+        try:
+            return self._evaluate(interpretation)
+        except KeyError:
             raise InvalidInterpretation
 
-        return interpretation[self.s]
+    def _evaluate(self, interpretation):
+        return interpretation[self.tree]
 
 
 class InvalidFormula(Exception):
