@@ -60,5 +60,6 @@ def test_evaluate_longer_literal():
 def test_evaluate_not():
     assert not Formula("(NOT p)").evaluate({"p": True})
 
+
 def test_evaluate_not_not():
     assert Formula("(NOT (NOT p))").evaluate({"p": True})
