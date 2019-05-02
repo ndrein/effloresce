@@ -1,4 +1,4 @@
-from lark import Lark
+from lark import Lark, Token
 from operator import or_, and_, eq
 from lark.exceptions import UnexpectedCharacters, ParseError
 
@@ -16,22 +16,21 @@ class Formula:
         def _evaluate(tree):
             """Recursive implementation of evaluate"""
 
-            def _inject_children(bin_op):
+            def _make_nullary_op(bin_op):
                 return lambda: bin_op(
                     _evaluate(tree.children[0]), _evaluate(tree.children[1])
                 )
 
-            def _implies():
-                return not _evaluate(tree.children[0]) or _evaluate(tree.children[1])
+            if isinstance(tree, Token):
+                return interpretation[tree]
 
             return {
-                "literal": lambda: interpretation[tree],
                 "not": lambda: not _evaluate(tree.children[0]),
-                "or": _inject_children(or_),
-                "and": _inject_children(and_),
-                "implies": _implies,
-                "iff": _inject_children(eq),
-            }[getattr(tree, "data", "literal")]()
+                "or": _make_nullary_op(or_),
+                "and": _make_nullary_op(and_),
+                "implies": _make_nullary_op(lambda p, q: not p or q),
+                "iff": _make_nullary_op(eq),
+            }[tree.data]()
 
         return _evaluate(self.tree)
 
