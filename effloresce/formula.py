@@ -3,6 +3,7 @@ from operator import or_, and_, eq
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
+from typing import Dict, Callable
 
 
 class Formula:
@@ -12,11 +13,11 @@ class Formula:
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
-    def evaluate(self, interpretation):
+    def evaluate(self, interpretation: Dict):
         def _evaluate(tree):
             """Recursive implementation of evaluate"""
 
-            def _make_nullary_op(bin_op):
+            def _make_nullary_op(bin_op: Callable):
                 return lambda: bin_op(
                     _evaluate(tree.children[0]), _evaluate(tree.children[1])
                 )
