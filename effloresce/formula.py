@@ -1,4 +1,4 @@
-from lark import Lark, Transformer, Token
+from lark import Lark
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
@@ -11,22 +11,19 @@ class Formula:
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
-    @classmethod
-    def _evaluate(cls, tree, interpretation):
-        if isinstance(tree, Token):
-            return interpretation[tree]
-        elif tree.data == "or":
-            return cls._evaluate(tree.children[0], interpretation) or cls._evaluate(
-                tree.children[1], interpretation
-            )
-        elif tree.data == "and":
-            return cls._evaluate(tree.children[0], interpretation) and cls._evaluate(
-                tree.children[1], interpretation
-            )
-        return not cls._evaluate(tree.children[0], interpretation)
-
     def evaluate(self, interpretation):
-        return self._evaluate(self.tree, interpretation)
+        def _evaluate(tree):
+            """Recursive implementation of tree evaluation"""
+            return {
+                "literal": lambda: interpretation[tree],
+                "not": lambda: not _evaluate(tree.children[0]),
+                "or": lambda: _evaluate(tree.children[0])
+                or _evaluate(tree.children[1]),
+                "and": lambda: _evaluate(tree.children[0])
+                and _evaluate(tree.children[1]),
+            }[getattr(tree, "data", "literal")]()
+
+        return _evaluate(self.tree)
 
 
 class InvalidFormula(Exception):
