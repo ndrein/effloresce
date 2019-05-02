@@ -19,6 +19,10 @@ class Formula:
             return cls._evaluate(tree.children[0], interpretation) or cls._evaluate(
                 tree.children[1], interpretation
             )
+        elif tree.data == "and":
+            return cls._evaluate(tree.children[0], interpretation) and cls._evaluate(
+                tree.children[1], interpretation
+            )
         return not cls._evaluate(tree.children[0], interpretation)
 
     def evaluate(self, interpretation):

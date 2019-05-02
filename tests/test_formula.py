@@ -85,3 +85,15 @@ def test_evaluate_complex_or():
     assert not Formula("((NOT (p OR q)) OR r)").evaluate(
         {"p": False, "q": True, "r": False}
     )
+
+
+def test_evaluate_false_and():
+    assert not Formula("(p AND p)").evaluate({"p": False})
+
+
+def test_evaluate_true_and():
+    assert Formula("(p AND p)").evaluate({"p": True})
+
+
+def test_evaluate_complex_and():
+    assert Formula("((NOT p) AND (q OR p))").evaluate({"p": False, "q": True})
