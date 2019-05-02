@@ -11,11 +11,15 @@ class Formula:
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
-    def _evaluate(self, tree, interpretation):
+    @classmethod
+    def _evaluate(cls, tree, interpretation):
         if isinstance(tree, Token):
             return interpretation[tree]
-
-        return not self._evaluate(tree.children[0], interpretation)
+        elif tree.data == "or":
+            return cls._evaluate(tree.children[0], interpretation) or cls._evaluate(
+                tree.children[1], interpretation
+            )
+        return not cls._evaluate(tree.children[0], interpretation)
 
     def evaluate(self, interpretation):
         return self._evaluate(self.tree, interpretation)

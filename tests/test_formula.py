@@ -63,3 +63,25 @@ def test_evaluate_not():
 
 def test_evaluate_not_not():
     assert Formula("(NOT (NOT p))").evaluate({"p": True})
+
+
+def test_evaluate_or():
+    assert Formula("(p OR p)").evaluate(({"p": True}))
+
+
+def test_evaluate_false_or():
+    assert not Formula("(p OR p)").evaluate(({"p": False}))
+
+
+def test_evaluate_false_true_or():
+    assert Formula("(p OR q)").evaluate(({"p": False, "q": True}))
+
+
+def test_evaluate_nested_or():
+    assert Formula("(p OR (NOT p))").evaluate({"p": False})
+
+
+def test_evaluate_complex_or():
+    assert not Formula("((NOT (p OR q)) OR r)").evaluate(
+        {"p": False, "q": True, "r": False}
+    )
