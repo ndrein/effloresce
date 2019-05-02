@@ -97,3 +97,15 @@ def test_evaluate_true_and():
 
 def test_evaluate_complex_and():
     assert Formula("((NOT p) AND (q OR p))").evaluate({"p": False, "q": True})
+
+
+def test_evaluate_complex_implies():
+    assert Formula("((NOT p) IMPLIES (p OR r))").evaluate(
+        {"p": False, "q": False, "r": True}
+    )
+
+
+def test_evaluate_complex_iff():
+    assert not Formula("((p IMPLIES p) IFF (p AND q))").evaluate(
+        {"p": True, "q": False}
+    )
