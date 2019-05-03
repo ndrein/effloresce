@@ -13,27 +13,29 @@ class Formula:
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
+    @classmethod
+    def _evaluate(cls, tree, interpretation):
+        """Recurses on smaller trees"""
+
+        def _make_nullary_op(bin_op: Callable):
+            return lambda: bin_op(
+                cls._evaluate(tree.children[0], interpretation),
+                cls._evaluate(tree.children[1], interpretation),
+            )
+
+        if isinstance(tree, Token):
+            return interpretation[tree]
+
+        return {
+            "not": lambda: not cls._evaluate(tree.children[0], interpretation),
+            "or": _make_nullary_op(or_),
+            "and": _make_nullary_op(and_),
+            "implies": _make_nullary_op(lambda p, q: not p or q),
+            "iff": _make_nullary_op(eq),
+        }[tree.data]()
+
     def evaluate(self, interpretation: Dict):
-        def _evaluate(tree):
-            """Recursive implementation of evaluate"""
-
-            def _make_nullary_op(bin_op: Callable):
-                return lambda: bin_op(
-                    _evaluate(tree.children[0]), _evaluate(tree.children[1])
-                )
-
-            if isinstance(tree, Token):
-                return interpretation[tree]
-
-            return {
-                "not": lambda: not _evaluate(tree.children[0]),
-                "or": _make_nullary_op(or_),
-                "and": _make_nullary_op(and_),
-                "implies": _make_nullary_op(lambda p, q: not p or q),
-                "iff": _make_nullary_op(eq),
-            }[tree.data]()
-
-        return _evaluate(self.tree)
+        return self._evaluate(self.tree, interpretation)
 
 
 class InvalidFormula(Exception):
