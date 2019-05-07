@@ -37,7 +37,7 @@ class Formula:
     def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
-    def entails(self, formula):
+    def entails(self, formula: "Formula") -> bool:
         raise MismatchedLiteral
 
 
