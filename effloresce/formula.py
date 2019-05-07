@@ -3,7 +3,7 @@ from operator import or_, and_, eq
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
-from typing import Dict, Callable
+from typing import Dict, Callable, Any
 
 
 class Formula:
@@ -17,7 +17,7 @@ class Formula:
     def _evaluate(cls, tree, interpretation):
         """Recurses on smaller trees"""
 
-        def _make_nullary_op(bin_op: Callable):
+        def _make_nullary_op(bin_op):
             return lambda: bin_op(
                 cls._evaluate(tree.children[0], interpretation),
                 cls._evaluate(tree.children[1], interpretation),
@@ -38,5 +38,12 @@ class Formula:
         return self._evaluate(self.tree, interpretation)
 
 
+    def entails(self, formula):
+        raise MismatchedLiteral
+
 class InvalidFormula(Exception):
+    pass
+
+
+class MismatchedLiteral(Exception):
     pass

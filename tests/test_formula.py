@@ -1,6 +1,6 @@
 import pytest
 
-from effloresce.formula import Formula, InvalidFormula
+from effloresce.formula import Formula, InvalidFormula, MismatchedLiteral
 
 
 def test_empty_formula():
@@ -109,3 +109,8 @@ def test_evaluate_complex_iff():
     assert not Formula("((p IMPLIES p) IFF (p AND q))").evaluate(
         {"p": True, "q": False}
     )
+
+
+def test_entails_different_literals():
+    with pytest.raises(MismatchedLiteral):
+        Formula("p").entails(Formula("q"))
