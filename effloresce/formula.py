@@ -1,4 +1,4 @@
-from lark import Lark, Token
+from lark import Lark, Token, Tree
 from operator import or_, and_, eq
 from lark.exceptions import UnexpectedCharacters, ParseError
 
@@ -14,7 +14,7 @@ class Formula:
             raise InvalidFormula
 
     @classmethod
-    def _evaluate(cls, tree, interpretation):
+    def _evaluate(cls, tree: Tree, interpretation: Dict) -> bool:
         """Recurses on smaller trees"""
 
         def _make_nullary_op(bin_op: Callable):
@@ -34,7 +34,7 @@ class Formula:
             "iff": _make_nullary_op(eq),
         }[tree.data]()
 
-    def evaluate(self, interpretation: Dict):
+    def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
 
