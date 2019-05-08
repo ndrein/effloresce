@@ -17,7 +17,7 @@ class Formula:
     def _evaluate(cls, tree: Tree, interpretation: Dict) -> bool:
         """Recurses on smaller trees"""
 
-        def _make_nullary_op(bin_op):
+        def _make_nullary_op(bin_op: Callable[[Any, Any], bool]) -> Callable[[], bool]:
             return lambda: bin_op(
                 cls._evaluate(tree.children[0], interpretation),
                 cls._evaluate(tree.children[1], interpretation),
