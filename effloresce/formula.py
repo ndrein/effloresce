@@ -37,13 +37,22 @@ class Formula:
     def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
+    def _all_literals_known(self, formula: "Formula"):
+        if isinstance(self.tree, Token):
+            return formula.tree == self.tree
+
+        return formula.tree in self.tree.children
+
     def entails(self, formula: "Formula") -> bool:
-        raise MismatchedLiteral
+        if not self._all_literals_known(formula):
+            raise NoMatchingLiteral
+
+        return True
 
 
 class InvalidFormula(Exception):
     pass
 
 
-class MismatchedLiteral(Exception):
+class NoMatchingLiteral(Exception):
     pass

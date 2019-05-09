@@ -1,6 +1,6 @@
 import pytest
 
-from effloresce.formula import Formula, InvalidFormula, MismatchedLiteral
+from effloresce.formula import Formula, InvalidFormula, NoMatchingLiteral
 
 
 def test_empty_formula():
@@ -112,5 +112,18 @@ def test_evaluate_complex_iff():
 
 
 def test_entails_different_literals():
-    with pytest.raises(MismatchedLiteral):
+    with pytest.raises(NoMatchingLiteral):
         Formula("p").entails(Formula("q"))
+
+
+def test_entails_same_literals():
+    assert Formula("p").entails(Formula("p"))
+
+
+def test_entails_with_different_formulas():
+    assert Formula("(p OR p)").entails(Formula("p"))
+
+
+def test_entails_complex_formula_with_unknown_literal():
+    with pytest.raises(NoMatchingLiteral):
+        Formula("(p OR p)").entails(Formula("q"))
