@@ -121,9 +121,13 @@ def test_entails_same_literals():
 
 
 def test_entails_with_different_formulas():
-    assert Formula("(p OR p)").entails(Formula("p"))
+    assert Formula("p").entails(Formula("(NOT p)"))
 
 
-def test_entails_complex_formula_with_unknown_literal():
+def test_entails_complex_formula():
     with pytest.raises(NoMatchingLiteral):
-        Formula("(p OR p)").entails(Formula("q"))
+        Formula("p").entails(Formula("(NOT (NOT q))"))
+
+
+def test_entails_complex_formula_does_not_throw():
+    Formula("p").entails(Formula("(NOT (NOT p))"))

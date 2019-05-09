@@ -3,7 +3,7 @@ from operator import or_, and_, eq
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
-from typing import Dict, Callable, Any
+from typing import Dict, Callable, Any, Union
 
 
 class Formula:
@@ -37,14 +37,15 @@ class Formula:
     def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
-    def _all_literals_known(self, formula: "Formula"):
-        if isinstance(self.tree, Token):
-            return formula.tree == self.tree
+    def _contains_unknown_literal(self, tree: Union[Tree, Token]):
+        if isinstance(tree, Token):
+            return tree != self.tree
 
-        return formula.tree in self.tree.children
+        if isinstance(tree, Tree):
+            return self._contains_unknown_literal(tree.children[0])
 
     def entails(self, formula: "Formula") -> bool:
-        if not self._all_literals_known(formula):
+        if self._contains_unknown_literal(formula.tree):
             raise NoMatchingLiteral
 
         return True
