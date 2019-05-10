@@ -111,36 +111,5 @@ def test_evaluate_complex_iff():
     )
 
 
-def test_entails_different_literals():
-    with pytest.raises(NoMatchingLiteral):
-        Formula("p").entails(Formula("q"))
-
-
 def test_entails_same_literals():
     assert Formula("p").entails(Formula("p"))
-
-
-def test_entails_with_different_formulas():
-    assert Formula("p").entails(Formula("(NOT p)"))
-
-
-def test_entails_complex_formula():
-    with pytest.raises(NoMatchingLiteral):
-        Formula("p").entails(Formula("(NOT (NOT q))"))
-
-
-def test_entails_complex_formula_does_not_throw():
-    Formula("p").entails(Formula("(NOT (NOT p))"))
-
-
-def test_not_entails_literal_does_not_throw():
-    Formula("(NOT p)").entails(Formula("p"))
-
-
-def test_complex_formula_entails_literal_does_not_throw():
-    Formula("(NOT (NOT p))").entails(Formula("p"))
-
-
-def test_complex_formula_entails_complex_formula_throws():
-    with pytest.raises(NoMatchingLiteral):
-        Formula("(NOT (p OR q))").entails(Formula("(q IFF (r IMPLIES (NOT p)))"))

@@ -37,24 +37,7 @@ class Formula:
     def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
-    @classmethod
-    def _contains(cls, tree, token):
-        if isinstance(tree, Token):
-            return token == tree
-
-        return any([cls._contains(t, token) for t in tree.children])
-
-    def _contains_unknown_literal(self, tree: Union[Tree, Token]):
-        if isinstance(tree, Token):
-            return not self._contains(self.tree, tree)
-
-        if isinstance(tree, Tree):
-            return any([self._contains_unknown_literal(t) for t in tree.children])
-
     def entails(self, formula: "Formula") -> bool:
-        if self._contains_unknown_literal(formula.tree):
-            raise NoMatchingLiteral
-
         return True
 
 
