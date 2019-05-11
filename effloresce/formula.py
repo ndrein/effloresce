@@ -38,7 +38,10 @@ class Formula:
         return self._evaluate(self.tree, interpretation)
 
     def entails(self, formula: "Formula") -> bool:
-        return self._evaluate(formula.tree, {self.tree: True})
+        if isinstance(self.tree, Token):
+            return self._evaluate(formula.tree, {self.tree: True})
+
+        return not self._evaluate(formula.tree, {self.tree.children[0]: True})
 
 
 class InvalidFormula(Exception):

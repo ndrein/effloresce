@@ -129,3 +129,7 @@ def test_entails_different_literal():
 
 def test_entails_complex_formula_with_one_literal():
     assert not Formula("p").entails(Formula("((p IFF p) AND (NOT p))"))
+
+
+def test_not_entails_literal():
+    assert not Formula("(NOT p)").entails(Formula("p"))
