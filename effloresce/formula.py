@@ -38,7 +38,7 @@ class Formula:
         return self._evaluate(self.tree, interpretation)
 
     def entails(self, formula: "Formula") -> bool:
-        return True
+        return self._evaluate(formula.tree, {self.tree: True})
 
 
 class InvalidFormula(Exception):
