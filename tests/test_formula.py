@@ -105,6 +105,13 @@ def test_evaluate_complex_implies():
     )
 
 
+def test_evaluate_4_implies_cases():
+    assert Formula("(p IMPLIES q)").evaluate({"p": False, "q": False})
+    assert Formula("(p IMPLIES q)").evaluate({"p": False, "q": True})
+    assert not Formula("(p IMPLIES q)").evaluate({"p": True, "q": False})
+    assert Formula("(p IMPLIES q)").evaluate({"p": True, "q": True})
+
+
 def test_evaluate_complex_iff():
     assert not Formula("((p IMPLIES p) IFF (p AND q))").evaluate(
         {"p": True, "q": False}
