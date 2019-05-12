@@ -1,3 +1,4 @@
+from __future__ import annotations
 from lark import Lark, Token, Tree
 from operator import or_, and_, eq
 from lark.exceptions import UnexpectedCharacters, ParseError
@@ -37,7 +38,7 @@ class Formula:
     def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
-    def entails(self, formula: "Formula") -> bool:
+    def entails(self, formula: Formula) -> bool:
         if isinstance(self.tree, Token):
             return self._evaluate(formula.tree, {self.tree: True})
 
