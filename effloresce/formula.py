@@ -1,12 +1,12 @@
 from __future__ import annotations
 from lark import Lark, Token, Tree
 from operator import or_, and_, eq
-from itertools import product
+from itertools import product, chain
 
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
-from typing import Dict, Callable, Any, Union, Container, Collection, List
+from typing import Dict, Callable, Any, Union, Container, Collection, List, Iterable
 
 
 class Formula:
@@ -40,31 +40,29 @@ class Formula:
     def evaluate(self, interpretation: Dict) -> bool:
         return self._evaluate(self.tree, interpretation)
 
+    def _get_literals(self) -> List:
+        def get_literals(node):
+            if isinstance(node, Token):
+                yield node
+            else:
+                yield from chain(*(get_literals(n) for n in node.children))
+
+        return list(get_literals(self.tree))
+
     @staticmethod
-    def _get_literals(node: Union[Tree, Token]) -> List:
-        def get_literals(tree):
-            for node in tree.children:
-                if isinstance(node, Token):
-                    yield node
-                else:
-                    yield from get_literals(node)
-
-        if isinstance(node, Token):
-            return [node]
-
-        return list(get_literals(node))
+    def _get_all_interpretations(literals: List) -> Iterable:
+        for booleans in product(*[{False, True}] * len(literals)):
+            yield dict(zip(literals, booleans))
 
     def entails(self, formula: Formula) -> bool:
         """Determines whether formula is true for every interpretation that satisfies self"""
-        literals = self._get_literals(self.tree)
-        for booleans in product(*[{False, True}] * len(literals)):
-            interpretation = dict(zip(literals, booleans))
-            if self._evaluate(self.tree, interpretation) and not self._evaluate(
-                formula.tree, interpretation
-            ):
-                return False
-
-        return True
+        return all(
+            (
+                self._evaluate(formula.tree, interp)
+                for interp in self._get_all_interpretations(self._get_literals())
+                if self._evaluate(self.tree, interp)
+            )
+        )
 
 
 class InvalidFormula(Exception):
