@@ -1,9 +1,13 @@
-from lark import Lark, Token, Tree
+from __future__ import annotations
+
+from itertools import product, chain
 from operator import or_, and_, eq
+from typing import Dict, Callable, Any, List, Iterable
+
+from lark import Lark, Token, Tree
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
-from typing import Dict, Callable, Any
 
 
 class Formula:
@@ -34,8 +38,35 @@ class Formula:
             "iff": _make_nullary_op(eq),
         }[tree.data]()
 
-    def evaluate(self, interpretation: Dict) -> bool:
+    def evaluate(self, interpretation: Dict[str, bool]) -> bool:
         return self._evaluate(self.tree, interpretation)
+
+    def _get_literals(self) -> List:
+        """Return all literals in self.tree"""
+
+        def get_literals(node):
+            if isinstance(node, Token):
+                yield node
+            else:
+                yield from chain(*(get_literals(n) for n in node.children))
+
+        return list(get_literals(self.tree))
+
+    @staticmethod
+    def _get_all_interpretations(literals: List) -> Iterable[Dict]:
+        """Generate all possible interpretations"""
+        for booleans in product(*[{False, True}] * len(literals)):
+            yield dict(zip(literals, booleans))
+
+    def entails(self, formula: Formula) -> bool:
+        """Determines whether formula is true for every interpretation that satisfies self"""
+        return all(
+            (
+                self._evaluate(formula.tree, interp)
+                for interp in self._get_all_interpretations(self._get_literals())
+                if self._evaluate(self.tree, interp)
+            )
+        )
 
 
 class InvalidFormula(Exception):

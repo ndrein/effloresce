@@ -116,3 +116,37 @@ def test_evaluate_complex_iff():
     assert not Formula("((p IMPLIES p) IFF (p AND q))").evaluate(
         {"p": True, "q": False}
     )
+
+
+def test_entails_same_literals():
+    assert Formula("p").entails(Formula("p"))
+
+
+def test_entails_not():
+    assert not Formula("p").entails(Formula("(NOT p)"))
+
+
+def test_entails_different_literal_raises_error():
+    assert Formula("q").entails(Formula("q"))
+
+
+def test_bottom_entails_anything():
+    assert Formula("(p AND (NOT p))").entails(Formula("(p AND (NOT p))"))
+
+
+def test_entails_tautology():
+    assert Formula("p").entails(Formula("(p OR (NOT p))"))
+
+
+def test_unknown_literal_entails():
+    assert Formula("(p AND q)").entails(Formula("p"))
+
+
+def test_or_does_not_entail():
+    assert not Formula("(p OR q)").entails(Formula("p"))
+
+
+def test_complex_entails():
+    assert Formula("(NOT (p IFF q))").entails(
+        Formula("((NOT (p IMPLIES q)) OR (NOT (q IMPLIES p)))")
+    )
