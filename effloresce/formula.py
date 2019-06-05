@@ -1,12 +1,13 @@
 from __future__ import annotations
-from lark import Lark, Token, Tree
-from operator import or_, and_, eq
-from itertools import product, chain
 
+from itertools import product, chain
+from operator import or_, and_, eq
+from typing import Dict, Callable, Any, List, Iterable
+
+from lark import Lark, Token, Tree
 from lark.exceptions import UnexpectedCharacters, ParseError
 
 from effloresce.grammar import GRAMMAR
-from typing import Dict, Callable, Any, Union, Container, Collection, List, Iterable
 
 
 class Formula:
@@ -37,10 +38,12 @@ class Formula:
             "iff": _make_nullary_op(eq),
         }[tree.data]()
 
-    def evaluate(self, interpretation: Dict) -> bool:
+    def evaluate(self, interpretation: Dict[str, bool]) -> bool:
         return self._evaluate(self.tree, interpretation)
 
     def _get_literals(self) -> List:
+        """Return all literals in self.tree"""
+
         def get_literals(node):
             if isinstance(node, Token):
                 yield node
@@ -50,7 +53,8 @@ class Formula:
         return list(get_literals(self.tree))
 
     @staticmethod
-    def _get_all_interpretations(literals: List) -> Iterable:
+    def _get_all_interpretations(literals: List) -> Iterable[Dict]:
+        """Generate all possible interpretations"""
         for booleans in product(*[{False, True}] * len(literals)):
             yield dict(zip(literals, booleans))
 
@@ -66,8 +70,4 @@ class Formula:
 
 
 class InvalidFormula(Exception):
-    pass
-
-
-class NoMatchingLiteral(Exception):
     pass

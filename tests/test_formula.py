@@ -1,6 +1,6 @@
 import pytest
 
-from effloresce.formula import Formula, InvalidFormula, NoMatchingLiteral
+from effloresce.formula import Formula, InvalidFormula
 
 
 def test_empty_formula():
