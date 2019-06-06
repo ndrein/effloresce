@@ -1,12 +1,12 @@
 from __future__ import annotations
 
 from itertools import product, chain
-from operator import or_, and_, eq
-from typing import Dict, Callable, Any, List, Iterable
+from typing import Dict, List, Iterable
 
-from lark import Lark, Token, Tree
+from lark import Lark, Token
 from lark.exceptions import UnexpectedCharacters, ParseError
 
+from effloresce.evaluate import evaluate
 from effloresce.grammar import GRAMMAR
 
 
@@ -17,29 +17,8 @@ class Formula:
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
-    @classmethod
-    def _eval(cls, tree: Tree, interpretation: Dict) -> bool:
-        """Recurses on smaller trees"""
-
-        def _make_nullary_op(bin_op: Callable[[Any, Any], bool]) -> Callable[[], bool]:
-            return lambda: bin_op(
-                cls._eval(tree.children[0], interpretation),
-                cls._eval(tree.children[1], interpretation),
-            )
-
-        if isinstance(tree, Token):
-            return interpretation[tree]
-
-        return {
-            "not": lambda: not cls._eval(tree.children[0], interpretation),
-            "or": _make_nullary_op(or_),
-            "and": _make_nullary_op(and_),
-            "implies": _make_nullary_op(lambda p, q: not p or q),
-            "iff": _make_nullary_op(eq),
-        }[tree.data]()
-
     def evaluate(self, interpretation: Dict[str, bool]) -> bool:
-        return self._eval(self.tree, interpretation)
+        return evaluate(self.tree, interpretation)
 
     def _get_literals(self) -> List:
         """Return all literals in self.tree"""
@@ -62,9 +41,9 @@ class Formula:
         """Determines whether formula is true for every interpretation that satisfies self"""
         return all(
             (
-                self._eval(formula.tree, interp)
+                evaluate(formula.tree, interp)
                 for interp in self._get_interpretations(self._get_literals())
-                if self._eval(self.tree, interp)
+                if evaluate(self.tree, interp)
             )
         )
 
