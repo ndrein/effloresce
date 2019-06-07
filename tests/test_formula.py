@@ -118,6 +118,13 @@ def test_evaluate_complex_iff():
     )
 
 
+def test_evaluate_4_nand_cases():
+    assert Formula("(p NAND q)").evaluate({"p": False, "q": False})
+    assert Formula("(p NAND q)").evaluate({"p": False, "q": True})
+    assert Formula("(p NAND q)").evaluate({"p": True, "q": False})
+    assert not Formula("(p NAND q)").evaluate({"p": True, "q": True})
+
+
 def test_entails_same_literals():
     assert Formula("p").entails(Formula("p"))
 

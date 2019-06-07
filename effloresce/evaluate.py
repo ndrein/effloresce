@@ -22,4 +22,5 @@ def evaluate(tree: Tree, interpretation: Dict[str, bool]) -> bool:
         "and": _make_nullary_op(and_),
         "implies": _make_nullary_op(lambda p, q: not p or q),
         "iff": _make_nullary_op(eq),
+        "nand": _make_nullary_op(lambda p, q: not (p and q)),
     }[tree.data]()
