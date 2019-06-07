@@ -5,6 +5,7 @@ GRAMMAR = """
          | "(" start "AND" start ")" -> and
          | "(" start "IMPLIES" start ")" -> implies
          | "(" start "IFF" start ")" -> iff
+         | "(" start "NAND" start ")" -> nand
 LITERAL: /[a-z]+/
 
 %import common.WS

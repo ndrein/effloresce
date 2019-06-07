@@ -81,6 +81,17 @@ def test_iff():
     assert_matches(("iff", "p", "q"), Lark(GRAMMAR).parse("(p IFF q)"))
 
 
+def test_simple_nand():
+    assert_matches(("nand", "p", "p"), Lark(GRAMMAR).parse("(p NAND p)"))
+
+
+def test_complex_nand():
+    assert_matches(
+        ("nand", ("nand", "p", "q"), ("not", "q")),
+        Lark(GRAMMAR).parse("((p NAND q) NAND (NOT q))"),
+    )
+
+
 def assert_matches(target: Union[str, Sequence], tree: Tree):
     if isinstance(target, str):
         assert target == tree
