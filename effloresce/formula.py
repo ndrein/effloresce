@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from itertools import product, chain
-from typing import Dict, List, Iterable
+from typing import Dict, List, Iterable, Set, Sized
 
 from lark import Lark, Token
 from lark.exceptions import UnexpectedCharacters, ParseError
@@ -20,19 +20,19 @@ class Formula:
     def evaluate(self, interpretation: Dict[str, bool]) -> bool:
         return evaluate(self.tree, interpretation)
 
-    def _get_literals(self) -> List:
+    def _get_literals(self) -> Sized:
         """Return all literals in self.tree"""
+        if isinstance(self.tree, Token):
+            return {self.tree}
 
-        def get_literals(node):
-            if isinstance(node, Token):
-                yield node
-            else:
-                yield from chain(*(get_literals(n) for n in node.children))
-
-        return list(get_literals(self.tree))
+        return {
+            t
+            for t in chain(*(tree.children for tree in self.tree.iter_subtrees()))
+            if isinstance(t, Token)
+        }
 
     @staticmethod
-    def _get_interpretations(literals: List) -> Iterable[Dict]:
+    def _get_interpretations(literals: Sized) -> Iterable[Dict]:
         """Generate all possible interpretations"""
         for booleans in product(*[{False, True}] * len(literals)):
             yield dict(zip(literals, booleans))
