@@ -134,7 +134,8 @@ def test_entails_not():
 
 
 def test_entails_different_literal_raises_error():
-    assert Formula("q").entails(Formula("q"))
+    with pytest.raises(Exception):
+        Formula("p").entails(Formula("q"))
 
 
 def test_bottom_entails_anything():
