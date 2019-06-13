@@ -11,6 +11,9 @@ from effloresce.grammar import GRAMMAR
 
 
 class Formula:
+    def __eq__(self, o):
+        return isinstance(o, Formula) and self.tree == o.tree
+
     def __init__(self, s: str):
         try:
             self.tree = Lark(GRAMMAR).parse(s)
