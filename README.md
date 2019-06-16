@@ -8,7 +8,7 @@ Logical formula experiments.  Still experimental.
 
 # Installation
 
-All installation is performed automatically by `pipenv`.  
+All installation is performed automatically by [pipenv](https://docs.pipenv.org/en/latest/).  
 Make sure to prefix every python command with `pipenv run`.
 
 
