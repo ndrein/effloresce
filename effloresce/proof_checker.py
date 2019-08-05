@@ -11,6 +11,10 @@ def check(assumptions: List[Formula], inferences: List[Formula]) -> bool:
 
 
 def _is_axiom(t: Tree):
+    """
+    Determine if t follows Lukasiewicz's first axiom system:
+    (A | (B | C)) | ((D | (D | D)) | ((D | B) | (A | D))))
+    """
     try:
         return all(
             _is_tree(t)
