@@ -6,24 +6,28 @@ from lark import Tree
 from effloresce.formula import Formula
 
 
-def check(assumptions: List[Formula] = None, inferences: List[Formula] = None) -> bool:
-    """
-    Check if a proof is valid by determining whether
-    all of the inferences follow from each other or the given assumptions
+def check(assumptions: List[Formula], inferences: List[Formula]) -> bool:
+    if not inferences:
+        return True
 
-    :param assumptions: collection of Formulas.  Must contain only nand connectives.
-    :param inferences: Formulas derived from previous inferences or the assumptions.  Must contain only nand connectives.
-    """
-    assumptions = assumptions or []
-    inferences = inferences or []
-    return all((_is_valid_inference(inf, assumptions) for inf in inferences))
+    return _is_axiom(inferences[0].tree)
 
 
-def _is_valid_inference(inf: Formula, assumptions: List[Formula]):
-    return any(
-        isinstance(a.tree, Tree) and inf.tree == a.tree.children[1].children[1]
-        for a in assumptions
-    ) and any(
-        isinstance(a2.tree, Tree) and a1.tree == a2.tree.children[0]
-        for a1, a2 in product(assumptions, assumptions)
-    )
+def _is_axiom(t: Tree):
+    try:
+        trees = [
+            t.children[0].children[1],
+            t.children[1].children[0].children[1],
+            t.children[1].children[1],
+            t.children[1].children[1].children[0],
+            t.children[1].children[1].children[1],
+            t.children[1].children[1].children[1].children[0],
+            t.children[1].children[1].children[1].children[1],
+        ]
+        return all(_is_tree(t) for t in trees)
+    except AttributeError:
+        return False
+
+
+def _is_tree(v):
+    return isinstance(v, Tree)
