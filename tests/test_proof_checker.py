@@ -34,3 +34,15 @@ def test_single_invalid_inference():
         "((a NAND (a NAND a)) NAND ((a NAND (a NAND a)) NAND ((a NAND a) NAND ((a NAND a) NAND a))))",
     ):
         assert not check([], [Formula(s)])
+
+
+def test_second_invalid_inference():
+    assert not check(
+        [],
+        [
+            Formula(
+                "((a NAND (a NAND a)) NAND ((a NAND (a NAND a)) NAND ((a NAND a) NAND ((a NAND a) NAND (a NAND a)))))"
+            ),
+            Formula("a")
+        ],
+    )

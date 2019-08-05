@@ -7,24 +7,23 @@ from effloresce.formula import Formula
 
 
 def check(assumptions: List[Formula], inferences: List[Formula]) -> bool:
-    if not inferences:
-        return True
-
-    return _is_axiom(inferences[0].tree)
+    return all(_is_axiom(inf.tree) for inf in inferences)
 
 
 def _is_axiom(t: Tree):
     try:
-        trees = [
-            t.children[0].children[1],
-            t.children[1].children[0].children[1],
-            t.children[1].children[1],
-            t.children[1].children[1].children[0],
-            t.children[1].children[1].children[1],
-            t.children[1].children[1].children[1].children[0],
-            t.children[1].children[1].children[1].children[1],
-        ]
-        return all(_is_tree(t) for t in trees)
+        return all(
+            _is_tree(t)
+            for t in [
+                t.children[0].children[1],
+                t.children[1].children[0].children[1],
+                t.children[1].children[1],
+                t.children[1].children[1].children[0],
+                t.children[1].children[1].children[1],
+                t.children[1].children[1].children[1].children[0],
+                t.children[1].children[1].children[1].children[1],
+            ]
+        )
     except AttributeError:
         return False
 
