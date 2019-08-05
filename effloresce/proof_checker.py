@@ -6,26 +6,38 @@ from lark import Tree
 from effloresce.formula import Formula
 
 
+def _is_consequent(f: Formula, antecedents: List[Formula]):
+    return (
+            len(antecedents) == 2
+            and isinstance(antecedents[1].tree, Tree)
+            and isinstance(antecedents[1].tree.children[1], Tree)
+    )
+
+
 def check(assumptions: List[Formula], inferences: List[Formula]) -> bool:
-    return all(_is_axiom(inf.tree) for inf in inferences)
+    return all(
+        _is_axiom(inf) or _is_consequent(inf, assumptions + inferences[:i])
+        for i, inf in enumerate(inferences)
+    )
 
 
-def _is_axiom(t: Tree):
+def _is_axiom(f: Formula):
     """
-    Determine if t follows Lukasiewicz's first axiom system:
+    Determine if f follows Lukasiewicz's first axiom system:
     (A | (B | C)) | ((D | (D | D)) | ((D | B) | (A | D))))
     """
+    tree = f.tree
     try:
         return all(
             _is_tree(t)
             for t in [
-                t.children[0].children[1],
-                t.children[1].children[0].children[1],
-                t.children[1].children[1],
-                t.children[1].children[1].children[0],
-                t.children[1].children[1].children[1],
-                t.children[1].children[1].children[1].children[0],
-                t.children[1].children[1].children[1].children[1],
+                tree.children[0].children[1],
+                tree.children[1].children[0].children[1],
+                tree.children[1].children[1],
+                tree.children[1].children[1].children[0],
+                tree.children[1].children[1].children[1],
+                tree.children[1].children[1].children[1].children[0],
+                tree.children[1].children[1].children[1].children[1],
             ]
         )
     except AttributeError:
