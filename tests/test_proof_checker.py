@@ -64,5 +64,5 @@ def test_invalid_inference_with_second_antecedent_nand():
     assert not check([Formula("a"), Formula("(a NAND a)")], [Formula("c")])
 
 
-# def test_invalid_inference_with_correct_structure():
-#     assert not check([Formula("a"), Formula("(a NAND (a NAND a))")], [Formula("c")])
+def test_invalid_inference_with_correct_structure():
+    assert not check([Formula("a"), Formula("(a NAND (a NAND a))")], [Formula("c")])

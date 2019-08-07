@@ -8,9 +8,10 @@ from effloresce.formula import Formula
 
 def _is_consequent(f: Formula, antecedents: List[Formula]):
     return (
-            len(antecedents) == 2
-            and isinstance(antecedents[1].tree, Tree)
-            and isinstance(antecedents[1].tree.children[1], Tree)
+        len(antecedents) == 2
+        and isinstance(antecedents[1].tree, Tree)
+        and isinstance(antecedents[1].tree.children[1], Tree)
+        and antecedents[1].tree.children[1].children[1] == f.tree
     )
 
 
