@@ -101,3 +101,9 @@ def test_consequent_from_inference():
         [Formula("a"), Formula("(a NAND (a NAND (c NAND (a NAND d))))"), Formula("c")],
         [Formula("(c NAND (a NAND d))"), Formula("d")],
     )
+
+
+def test_complex_consequent():
+    assert check(
+        [Formula("a"), Formula("(a NAND (a NAND (a NAND a)))")], [Formula("(a NAND a)")]
+    )

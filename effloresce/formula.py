@@ -39,26 +39,26 @@ class Formula:
         :raises InvalidFormula if s is not described by the grammar
         """
         try:
-            self.tree = Lark(GRAMMAR).parse(s)
+            self._tree = Lark(GRAMMAR).parse(s)
         except (UnexpectedCharacters, ParseError):
             raise InvalidFormula
 
     def evaluate(self, interpretation: Dict[str, bool]) -> bool:
-        """Evaluate the syntax tree from the bottom up,
+        """Evaluate the syntax _tree from the bottom up,
         substituting true or false for literals according to the given interpretation
 
         :param interpretation: dict mapping from literal name to bool
         """
-        return self._evaluate(self.tree, interpretation)
+        return self._evaluate(self._tree, interpretation)
 
     def _get_literals(self) -> Sized:
-        """Return all literals in self.tree"""
-        if isinstance(self.tree, Token):
-            return {self.tree}
+        """Return all literals in self._tree"""
+        if isinstance(self._tree, Token):
+            return {self._tree}
 
         return {
             t
-            for t in chain(*(tree.children for tree in self.tree.iter_subtrees()))
+            for t in chain(*(tree.children for tree in self._tree.iter_subtrees()))
             if isinstance(t, Token)
         }
 
@@ -72,11 +72,46 @@ class Formula:
         """Determines whether formula is true for every interpretation that satisfies self"""
         return all(
             (
-                self._evaluate(formula.tree, interp)
+                self._evaluate(formula._tree, interp)
                 for interp in self._get_interpretations(self._get_literals())
-                if self._evaluate(self.tree, interp)
+                if self._evaluate(self._tree, interp)
             )
         )
+
+    def is_axiom(self) -> bool:
+        """
+        Determine if f proves Lukasiewicz's first axiom system:
+        (A | (B | C)) | ((D | (D | D)) | ((D | B) | (A | D))))
+        """
+        tree = self._tree
+        try:
+            return all(
+                isinstance(t, Tree)
+                for t in [
+                    tree.children[0].children[1],
+                    tree.children[1].children[0].children[1],
+                    tree.children[1].children[1],
+                    tree.children[1].children[1].children[0],
+                    tree.children[1].children[1].children[1],
+                    tree.children[1].children[1].children[1].children[0],
+                    tree.children[1].children[1].children[1].children[1],
+                ]
+            )
+        except AttributeError:
+            return False
+
+    def proves(self, ant_1: Formula, ant_2: Formula) -> bool:
+        """
+        Determine if self proves from Nicod's modus ponens:
+        A, (A | (B | C)) ⊢ C
+        """
+        try:
+            return (
+                ant_2._tree.children[1].children[1] == self._tree
+                and ant_2._tree.children[0] == ant_1._tree
+            )
+        except (AttributeError, IndexError):
+            return False
 
 
 class InvalidFormula(Exception):
