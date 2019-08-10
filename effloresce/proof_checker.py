@@ -1,4 +1,4 @@
-from itertools import product
+from itertools import product, combinations, permutations
 from typing import List
 
 from lark import Tree
@@ -6,15 +6,20 @@ from lark import Tree
 from effloresce.formula import Formula
 
 
-def _is_consequent(f: Formula, antecedents: List[Formula]):
+def _try_consequent(ant_1: Tree, ant_2: Tree, consequent: Tree):
     try:
-        ant_2 = antecedents[1]
         return (
-            ant_2.tree.children[1].children[1] == f.tree
-            and ant_2.tree.children[0] == antecedents[0].tree
+            ant_2.children[1].children[1] == consequent and ant_2.children[0] == ant_1
         )
     except (AttributeError, IndexError):
         return False
+
+
+def _is_consequent(f: Formula, antecedents: List[Formula]):
+    return any(
+        _try_consequent(ant_1.tree, ant_2.tree, f.tree)
+        for ant_1, ant_2 in permutations(antecedents, 2)
+    )
 
 
 def check(assumptions: List[Formula], inferences: List[Formula]) -> bool:

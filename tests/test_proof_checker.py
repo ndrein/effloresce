@@ -76,3 +76,28 @@ def test_3_antecedents():
     assert check(
         [Formula("a"), Formula("(a NAND (b NAND c))"), Formula("b")], [Formula("c")]
     )
+
+
+def test_reversed_antecedent_order():
+    assert check([Formula("(a NAND (a NAND b))"), Formula("a")], [Formula("b")])
+
+
+def test_antecedents_not_in_first_two_indices():
+    assert check(
+        [Formula("c"), Formula("d"), Formula("a"), Formula("(a NAND (a NAND b))")],
+        [Formula("b")],
+    )
+
+
+def test_consequent_occurs_before_antecedents():
+    assert not check(
+        [Formula("a"), Formula("(a NAND (a NAND b))"), Formula("(b NAND (a NAND c))")],
+        [Formula("c"), Formula("b")],
+    )
+
+
+def test_consequent_from_inference():
+    assert check(
+        [Formula("a"), Formula("(a NAND (a NAND (c NAND (a NAND d))))"), Formula("c")],
+        [Formula("(c NAND (a NAND d))"), Formula("d")],
+    )
