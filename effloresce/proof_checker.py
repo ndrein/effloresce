@@ -7,12 +7,14 @@ from effloresce.formula import Formula
 
 
 def _is_consequent(f: Formula, antecedents: List[Formula]):
-    return (
-        len(antecedents) == 2
-        and isinstance(antecedents[1].tree, Tree)
-        and isinstance(antecedents[1].tree.children[1], Tree)
-        and antecedents[1].tree.children[1].children[1] == f.tree
-    )
+    try:
+        ant_2 = antecedents[1]
+        return (
+            ant_2.tree.children[1].children[1] == f.tree
+            and ant_2.tree.children[0] == antecedents[0].tree
+        )
+    except (AttributeError, IndexError):
+        return False
 
 
 def check(assumptions: List[Formula], inferences: List[Formula]) -> bool:
