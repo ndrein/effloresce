@@ -13,6 +13,24 @@ from effloresce.grammar import GRAMMAR
 class Formula:
     """Represents a formula in propositional logic"""
 
+    def __init__(self, s: str):
+        """
+        :param s: Must be a string admitted by the propositional logic grammar
+        :raises InvalidFormula if s is not described by the grammar
+        """
+        try:
+            self._tree = Lark(GRAMMAR).parse(s)
+        except (UnexpectedCharacters, ParseError):
+            raise InvalidFormula
+
+    def evaluate(self, interpretation: Dict[str, bool]) -> bool:
+        """Evaluate the syntax _tree from the bottom up,
+        substituting true or false for literals according to the given interpretation
+
+        :param interpretation: dict mapping from literal name to bool
+        """
+        return self._evaluate(self._tree, interpretation)
+
     @classmethod
     def _evaluate(cls, tree: Tree, interpretation: Dict[str, bool]) -> bool:
         def _make_nullary_op(bin_op: Callable[[Any, Any], bool]) -> Callable[[], bool]:
@@ -33,23 +51,21 @@ class Formula:
             "nand": _make_nullary_op(lambda p, q: not (p and q)),
         }[tree.data]()
 
-    def __init__(self, s: str):
-        """
-        :param s: Must be a string admitted by the propositional logic grammar
-        :raises InvalidFormula if s is not described by the grammar
-        """
-        try:
-            self._tree = Lark(GRAMMAR).parse(s)
-        except (UnexpectedCharacters, ParseError):
-            raise InvalidFormula
+    def entails(self, formula: Formula) -> bool:
+        """Determines whether formula is true for every interpretation that satisfies self"""
+        return all(
+            (
+                self._evaluate(formula._tree, interp)
+                for interp in self._get_interpretations(self._get_literals())
+                if self._evaluate(self._tree, interp)
+            )
+        )
 
-    def evaluate(self, interpretation: Dict[str, bool]) -> bool:
-        """Evaluate the syntax _tree from the bottom up,
-        substituting true or false for literals according to the given interpretation
-
-        :param interpretation: dict mapping from literal name to bool
-        """
-        return self._evaluate(self._tree, interpretation)
+    @staticmethod
+    def _get_interpretations(literals: Sized[str]) -> Iterable[Dict]:
+        """Generate all possible interpretations"""
+        for booleans in product(*[{False, True}] * len(literals)):
+            yield dict(zip(literals, booleans))
 
     def _get_literals(self) -> Sized:
         """Return all literals in self._tree"""
@@ -61,22 +77,6 @@ class Formula:
             for t in chain(*(tree.children for tree in self._tree.iter_subtrees()))
             if isinstance(t, Token)
         }
-
-    @staticmethod
-    def _get_interpretations(literals: Sized[str]) -> Iterable[Dict]:
-        """Generate all possible interpretations"""
-        for booleans in product(*[{False, True}] * len(literals)):
-            yield dict(zip(literals, booleans))
-
-    def entails(self, formula: Formula) -> bool:
-        """Determines whether formula is true for every interpretation that satisfies self"""
-        return all(
-            (
-                self._evaluate(formula._tree, interp)
-                for interp in self._get_interpretations(self._get_literals())
-                if self._evaluate(self._tree, interp)
-            )
-        )
 
     def is_axiom(self) -> bool:
         """
