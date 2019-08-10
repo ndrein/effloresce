@@ -101,3 +101,15 @@ def test_consequent_from_inference():
         [Formula("a"), Formula("(a NAND (a NAND (c NAND (a NAND d))))"), Formula("c")],
         [Formula("(c NAND (a NAND d))"), Formula("d")],
     )
+
+
+def test_duplicate_assumptions():
+    assert check(
+        [Formula("a"), Formula("a"), Formula("(a NAND (a NAND b))")], [Formula("b")]
+    )
+
+
+def test_duplicate_consequents():
+    assert check(
+        [Formula("a"), Formula("(a NAND (a NAND b))")], [Formula("b"), Formula("b")]
+    )
