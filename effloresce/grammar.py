@@ -1,3 +1,7 @@
+"""
+Grammar for formulas in propositional logic
+"""
+
 GRAMMAR = """
 ?start: LITERAL
          | "(NOT" start ")" -> not
