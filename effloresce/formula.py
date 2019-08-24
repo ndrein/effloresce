@@ -80,7 +80,7 @@ class Formula:
 
     def is_axiom(self) -> bool:
         """
-        Determine if f proves Lukasiewicz's first axiom system:
+        Determine if f follows Lukasiewicz's first axiom system:
         (A | (B | C)) | ((D | (D | D)) | ((D | B) | (A | D))))
         """
         tree = self._tree
@@ -100,9 +100,9 @@ class Formula:
         except AttributeError:
             return False
 
-    def proves(self, ant_1: Formula, ant_2: Formula) -> bool:
+    def follows(self, ant_1: Formula, ant_2: Formula) -> bool:
         """
-        Determine if self proves from Nicod's modus ponens:
+        Determine if self follows from Nicod's modus ponens:
         A, (A | (B | C)) ⊢ C
         """
         try:
