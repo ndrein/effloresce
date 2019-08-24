@@ -107,3 +107,15 @@ def test_complex_consequent():
     assert check(
         [Formula("a"), Formula("(a NAND (a NAND (a NAND a)))")], [Formula("(a NAND a)")]
     )
+
+
+def test_duplicate_assumptions():
+    assert check(
+        [Formula("a"), Formula("a"), Formula("(a NAND (a NAND b))")], [Formula("b")]
+    )
+
+
+def test_duplicate_consequents():
+    assert check(
+        [Formula("a"), Formula("(a NAND (a NAND b))")], [Formula("b"), Formula("b")]
+    )
