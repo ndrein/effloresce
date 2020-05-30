@@ -10,7 +10,7 @@ Logical formula experiments.  Still experimental.
 
 All installation is performed by [pipenv](https://docs.pipenv.org/en/latest/).  Run the following:
 ```bash
-pipenv install
+pipenv install --dev
 ```
 
 
